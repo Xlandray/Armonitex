@@ -1,0 +1,72 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER must be set}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB must be set}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  migrate:
+    build:
+      context: ./backend
+    command: ["alembic", "upgrade", "head"]
+    environment: &api_env
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?JWT_SECRET_KEY must be set}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:?CORS_ALLOWED_ORIGINS must be set}
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-noreply@armonitex.com.tr}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-change-me}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: ./backend
+    command: ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "app.main:app", "--bind", "0.0.0.0:8000"]
+    ports:
+      - "${API_PORT:-8080}:8000"
+    environment: *api_env
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: always
+
+  admin-panel:
+    build:
+      context: ./admin-panel
+    ports:
+      - "${ADMIN_PORT:-5180}:5173"
+    environment:
+      VITE_API_URL: https://api.armonitex.com.tr/api/v1
+    depends_on:
+      api:
+        condition: service_started
+    restart: always
+
+  armonitex-web:
+    build:
+      context: ./armonitex-web
+    ports:
+      - "${WEB_PORT:-3005}:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: https://api.armonitex.com.tr/api/v1
+      NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID}
+    depends_on:
+      api:
+        condition: service_started
+    restart: always
+
+volumes:
+  postgres_prod_data:
