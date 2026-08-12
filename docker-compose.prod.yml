@@ -52,10 +52,16 @@ services:
   admin-panel:
     build:
       context: ./admin-panel
-    ports:
-      - "${ADMIN_PORT:-5180}:5173"
-    environment:
-      VITE_API_URL: https://armonitex-api.ataci.com.tr/api/v1
+      target: prod
+      args:
+        # Vite bu degeri derleme aninda pakete gomer; calisma zamani
+        # environment'i statik dosyalari etkilemezdi.
+        VITE_API_URL: https://armonitex-api.ataci.com.tr/api/v1
+    # !override: base'deki "5180:5173" ile birlesmesin. Birlesirse ayni host
+    # portu iki kez baglanmaya calisilir ve container ag kurulumunda patlar.
+    ports: !override
+      # prod asamasi nginx, 80'de dinliyor (dev asamasi Vite, 5173'te).
+      - "${ADMIN_PORT:-5180}:80"
     # Ayni gerekce: kaynak imajdan gelsin, calisma agacindan degil.
     volumes: !override []
     depends_on:

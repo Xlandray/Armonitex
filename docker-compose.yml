@@ -49,6 +49,9 @@ services:
   admin-panel:
     build:
       context: ./admin-panel
+      # Dockerfile cok asamali; hedef verilmezse son asama (nginx'li prod)
+      # kurulur. Gelistirmede Vite dev sunucusu isteniyor.
+      target: dev
     ports:
       - "${ADMIN_PORT:-5180}:5173"
     environment:
