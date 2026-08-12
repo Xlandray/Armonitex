@@ -44,8 +44,12 @@ class AdminUserService:
 
     async def update(self, user_id: uuid.UUID, user_in: AdminUserUpdate) -> User:
         user = await self.get(user_id)
-        for field, value in user_in.model_dump(exclude_unset=True).items():
+        data = user_in.model_dump(exclude_unset=True)
+        password = data.pop("password", None)
+        for field, value in data.items():
             setattr(user, field, value)
+        if password is not None:
+            user.hashed_password = hash_password(password)
         await self._session.commit()
         await self._session.refresh(user)
         return user

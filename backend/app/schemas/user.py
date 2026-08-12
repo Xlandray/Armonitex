@@ -29,6 +29,7 @@ class AdminUserUpdate(Schema):
     is_active: bool | None = None
     is_superuser: bool | None = None
     is_customer: bool | None = None
+    password: str | None = Field(default=None, min_length=12, max_length=128)
 
 
 class UserRead(Schema):
