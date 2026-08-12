@@ -13,6 +13,13 @@ export type ColumnDef = {
   dataIndex: string;
   title: string;
   ellipsis?: boolean;
+  // sortable: dataIndex ayni zamanda API'nin siralama anahtaridir; backend'de
+  // ilgili kaynagin Literal beyaz listesinde bulunmali.
+  sortable?: boolean;
+  // filter: tek secimli kolon filtresi; deger dogrudan query param olur.
+  filter?: { options: { value: string; label: string }[] };
+  // linkTo: hucreyi bir kayda goturur.
+  linkTo?: (record: Record<string, unknown>) => string;
   render?: (value: unknown, record: Record<string, unknown>) => ReactNode;
 };
 
@@ -51,6 +58,8 @@ export type ResourceConfig = {
   fields: { create: FieldDef[]; edit: FieldDef[] };
   canCreate?: boolean;
   canDelete?: boolean;
+  // searchable: liste basligina arama kutusu koyar; API'ye ?q= olarak gider.
+  searchable?: boolean;
 };
 
 // --- ortak render yardimcilari ---
@@ -145,20 +154,48 @@ const projectLabel = (p: Record<string, unknown>): string => {
   return p.reference_no ? `${title} (${String(p.reference_no)})` : title;
 };
 
+// Ic ice gelen ozet nesneler (AdminProjectRead.customer,
+// AdminFinancialRecordRead.project) icin ortak okuma/etiketleme.
+type Brief = { id: string } & Record<string, unknown>;
+
+const asBrief = (value: unknown): Brief | undefined =>
+  value && typeof value === "object" ? (value as Brief) : undefined;
+
+const briefCell =
+  (label: (record: Record<string, unknown>) => string) =>
+  (value: unknown): ReactNode => {
+    const brief = asBrief(value);
+    return brief ? label(brief) : "—";
+  };
+
+const briefLink =
+  (path: string, key: string) =>
+  (record: Record<string, unknown>): string =>
+    `${path}/${asBrief(record[key])?.id ?? ""}`;
+
+const boolFilter = (yes: string, no: string) => ({
+  options: [
+    { value: "true", label: yes },
+    { value: "false", label: no },
+  ],
+});
+
 export const RESOURCES: ResourceConfig[] = [
   {
     name: "admin/contents",
     path: "contents",
     label: "İçerikler",
+    searchable: true,
     columns: [
-      { dataIndex: "title", title: "Başlık", ellipsis: true },
+      { dataIndex: "title", title: "Başlık", ellipsis: true, sortable: true },
       { dataIndex: "slug", title: "Slug", ellipsis: true },
       {
         dataIndex: "is_published",
         title: "Durum",
         render: (v) => boolTag(v, "Yayında", "Taslak"),
+        filter: boolFilter("Yayında", "Taslak"),
       },
-      { dataIndex: "updated_at", title: "Güncellendi", render: fmtDateTime },
+      { dataIndex: "updated_at", title: "Güncellendi", render: fmtDateTime, sortable: true },
     ],
     fields: {
       create: [
@@ -191,8 +228,9 @@ export const RESOURCES: ResourceConfig[] = [
     name: "admin/settings",
     path: "settings",
     label: "Ayarlar",
+    searchable: true,
     columns: [
-      { dataIndex: "key", title: "Anahtar" },
+      { dataIndex: "key", title: "Anahtar", sortable: true },
       { dataIndex: "value", title: "Değer", render: jsonCell },
       { dataIndex: "description", title: "Açıklama", ellipsis: true, render: dash },
     ],
@@ -230,17 +268,29 @@ export const RESOURCES: ResourceConfig[] = [
     name: "admin/users",
     path: "users",
     label: "Kullanıcılar",
+    searchable: true,
     columns: [
-      { dataIndex: "email", title: "E-posta" },
+      { dataIndex: "email", title: "E-posta", sortable: true },
       { dataIndex: "full_name", title: "Ad Soyad", render: dash },
-      { dataIndex: "is_customer", title: "Müşteri", render: (v) => boolTag(v, "Müşteri", "—") },
+      {
+        dataIndex: "is_customer",
+        title: "Müşteri",
+        render: (v) => boolTag(v, "Müşteri", "—"),
+        filter: boolFilter("Müşteri", "Müşteri değil"),
+      },
       {
         dataIndex: "is_superuser",
         title: "Yönetici",
         render: (v) => (v ? <Tag color="volcano">Admin</Tag> : "—"),
+        filter: boolFilter("Yönetici", "Yönetici değil"),
       },
-      { dataIndex: "is_active", title: "Aktif", render: (v) => boolTag(v, "Aktif", "Pasif") },
-      { dataIndex: "created_at", title: "Oluşturuldu", render: fmtDate },
+      {
+        dataIndex: "is_active",
+        title: "Aktif",
+        render: (v) => boolTag(v, "Aktif", "Pasif"),
+        filter: boolFilter("Aktif", "Pasif"),
+      },
+      { dataIndex: "created_at", title: "Oluşturuldu", render: fmtDate, sortable: true },
     ],
     fields: {
       create: [
@@ -281,12 +331,31 @@ export const RESOURCES: ResourceConfig[] = [
     name: "admin/projects",
     path: "projects",
     label: "Projeler",
+    searchable: true,
     columns: [
-      { dataIndex: "title", title: "Proje", ellipsis: true },
+      {
+        dataIndex: "title",
+        title: "Proje",
+        ellipsis: true,
+        sortable: true,
+        linkTo: (r) => `/projects/show/${String(r.id)}`,
+      },
       { dataIndex: "reference_no", title: "Referans", render: dash },
-      { dataIndex: "status", title: "Durum", render: statusTag },
-      { dataIndex: "customer_id", title: "Müşteri ID", ellipsis: true },
-      { dataIndex: "created_at", title: "Oluşturuldu", render: fmtDate },
+      {
+        dataIndex: "status",
+        title: "Durum",
+        render: statusTag,
+        sortable: true,
+        filter: { options: PROJECT_STATUS_OPTIONS },
+      },
+      {
+        dataIndex: "customer",
+        title: "Müşteri",
+        ellipsis: true,
+        render: briefCell(customerLabel),
+        linkTo: briefLink("/users/edit", "customer"),
+      },
+      { dataIndex: "created_at", title: "Oluşturuldu", render: fmtDate, sortable: true },
     ],
     fields: {
       create: [
@@ -323,17 +392,41 @@ export const RESOURCES: ResourceConfig[] = [
     name: "admin/financial-records",
     path: "financial-records",
     label: "Teklif/Fatura",
+    searchable: true,
     columns: [
-      { dataIndex: "type", title: "Tür", render: typeTag },
+      {
+        dataIndex: "type",
+        title: "Tür",
+        render: typeTag,
+        filter: {
+          options: [
+            { value: "quote", label: "Teklif" },
+            { value: "invoice", label: "Fatura" },
+          ],
+        },
+      },
       { dataIndex: "number", title: "No" },
+      {
+        dataIndex: "project",
+        title: "Proje",
+        ellipsis: true,
+        render: briefCell(projectLabel),
+        linkTo: briefLink("/projects/show", "project"),
+      },
       {
         dataIndex: "amount",
         title: "Tutar",
+        sortable: true,
         render: (v, r) => `${v} ${String(r.currency ?? "")}`,
       },
-      { dataIndex: "status", title: "Durum", render: statusTag },
-      { dataIndex: "issue_date", title: "Düzenleme", render: fmtDate },
-      { dataIndex: "due_date", title: "Vade", render: fmtDate },
+      {
+        dataIndex: "status",
+        title: "Durum",
+        render: statusTag,
+        filter: { options: FINANCIAL_STATUS_OPTIONS },
+      },
+      { dataIndex: "issue_date", title: "Düzenleme", render: fmtDate, sortable: true },
+      { dataIndex: "due_date", title: "Vade", render: fmtDate, sortable: true },
     ],
     fields: {
       create: [
