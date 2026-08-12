@@ -1,13 +1,26 @@
-import { Tag, Typography } from "antd";
-import dayjs from "dayjs";
+import { Tag } from "antd";
 import type { ReactNode } from "react";
+
+import {
+  boolTag,
+  customerLabel,
+  dash,
+  fmtDate,
+  fmtDateTime,
+  jsonCell,
+  money,
+  projectLabel,
+  statusTag,
+  typeTag,
+} from "./display";
 
 // Merkezi kaynak tanimlari: her admin sekmesinin kolonlari ve form alanlari
 // burada tanimlanir. Liste/form sayfalari bu config'i okuyup render eder.
 //
 // NOT: admin/documents bilerek burada degil — dosya yukleme (multipart) ve proje
-// bazli filtreleme bu config sistemine sigmiyor. Elle yazilmis sayfasi ve kendi
-// rotasi var: pages/DocumentsPage.tsx + App.tsx. Buraya kayit olarak eklemeyin.
+// bazli filtreleme bu config sistemine sigmiyor. Yukleme/listeleme bilesen olarak
+// components/ProjectDocuments.tsx'te; sekme sayfasi pages/DocumentsPage.tsx,
+// rotasi App.tsx'te. Buraya kayit olarak eklemeyin.
 
 export type ColumnDef = {
   dataIndex: string;
@@ -60,64 +73,10 @@ export type ResourceConfig = {
   canDelete?: boolean;
   // searchable: liste basligina arama kutusu koyar; API'ye ?q= olarak gider.
   searchable?: boolean;
+  // hasShow: kaynagin ayri bir detay ekrani var (rotasi App.tsx'te elle
+  // tanimlidir, config'ten uretilmez).
+  hasShow?: boolean;
 };
-
-// --- ortak render yardimcilari ---
-
-const STATUS_LABELS: Record<string, string> = {
-  teklif: "Teklif",
-  onaylandi: "Onaylandı",
-  uretimde: "Üretimde",
-  tamamlandi: "Tamamlandı",
-  iptal: "İptal",
-  bekliyor: "Bekliyor",
-  reddedildi: "Reddedildi",
-  odendi: "Ödendi",
-  gecikti: "Gecikti",
-};
-
-const STATUS_COLORS: Record<string, string> = {
-  teklif: "blue",
-  onaylandi: "green",
-  uretimde: "gold",
-  tamamlandi: "success",
-  iptal: "red",
-  bekliyor: "gold",
-  reddedildi: "red",
-  odendi: "green",
-  gecikti: "red",
-};
-
-const fmtDate = (value: unknown): ReactNode =>
-  value ? dayjs(value as string).format("DD.MM.YYYY") : "—";
-
-const fmtDateTime = (value: unknown): ReactNode =>
-  value ? dayjs(value as string).format("DD.MM.YYYY HH:mm") : "—";
-
-const boolTag = (value: unknown, yes: string, no: string): ReactNode => (
-  <Tag color={value ? "green" : "default"}>{value ? yes : no}</Tag>
-);
-
-const statusTag = (value: unknown): ReactNode => {
-  const key = String(value ?? "");
-  return <Tag color={STATUS_COLORS[key] ?? "default"}>{STATUS_LABELS[key] ?? (key || "—")}</Tag>;
-};
-
-const typeTag = (value: unknown): ReactNode =>
-  value === "invoice" ? (
-    <Tag color="purple">Fatura</Tag>
-  ) : (
-    <Tag color="blue">Teklif</Tag>
-  );
-
-const jsonCell = (value: unknown): ReactNode => (
-  <Typography.Text code ellipsis style={{ maxWidth: 320 }}>
-    {JSON.stringify(value)}
-  </Typography.Text>
-);
-
-const dash = (value: unknown): ReactNode =>
-  value === null || value === undefined || value === "" ? "—" : String(value);
 
 // --- kaynak tanimlari ---
 
@@ -142,17 +101,6 @@ const CURRENCY_OPTIONS = [
   { value: "USD", label: "USD ($)" },
   { value: "EUR", label: "EUR (€)" },
 ];
-
-const customerLabel = (u: Record<string, unknown>): string => {
-  const email = String(u.email ?? "");
-  const name = u.full_name ? `${String(u.full_name)} · ` : "";
-  return `${name}${email}`;
-};
-
-const projectLabel = (p: Record<string, unknown>): string => {
-  const title = String(p.title ?? "");
-  return p.reference_no ? `${title} (${String(p.reference_no)})` : title;
-};
 
 // Ic ice gelen ozet nesneler (AdminProjectRead.customer,
 // AdminFinancialRecordRead.project) icin ortak okuma/etiketleme.
@@ -332,6 +280,7 @@ export const RESOURCES: ResourceConfig[] = [
     path: "projects",
     label: "Projeler",
     searchable: true,
+    hasShow: true,
     columns: [
       {
         dataIndex: "title",
@@ -417,7 +366,7 @@ export const RESOURCES: ResourceConfig[] = [
         dataIndex: "amount",
         title: "Tutar",
         sortable: true,
-        render: (v, r) => `${v} ${String(r.currency ?? "")}`,
+        render: (v, r) => money(v, r.currency),
       },
       {
         dataIndex: "status",

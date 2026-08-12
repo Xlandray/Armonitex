@@ -16,6 +16,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { ResourceListPage } from "./pages/ResourceListPage";
 import { ResourceFormPage } from "./pages/ResourceFormPage";
 import { DocumentsPage } from "./pages/DocumentsPage";
+import { ProjectShowPage } from "./pages/ProjectShowPage";
 import { RESOURCES } from "./resources";
 import { authProvider } from "./providers/authProvider";
 import { dataProvider } from "./providers/dataProvider";
@@ -26,6 +27,7 @@ const refineResources = [
     list: `/${r.path}`,
     create: `/${r.path}/create`,
     edit: `/${r.path}/edit/:id`,
+    ...(r.hasShow ? { show: `/${r.path}/show/:id` } : {}),
     meta: { label: r.label },
   })),
   { name: "admin/documents", list: "/documents", meta: { label: "Dokümanlar" } },
@@ -70,6 +72,9 @@ function AdminApp() {
               />
             </Fragment>
           ))}
+          {/* Proje detayi config'ten uretilemez (kendi duzeni ve alt tablolari
+              var), bu yuzden rotasi burada elle tanimli. */}
+          <Route path="/projects/show/:id" element={<ProjectShowPage />} />
           <Route path="/documents" element={<DocumentsPage />} />
           <Route path="*" element={<ErrorComponent />} />
         </Route>

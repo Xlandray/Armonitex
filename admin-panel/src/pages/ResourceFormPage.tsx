@@ -5,7 +5,7 @@ import { DatePicker, Form, Input, InputNumber, Select, Switch, message } from "a
 import type { Rule } from "antd/es/form";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
 import { axiosInstance } from "../providers/axios";
 import type { FieldDef, ResourceConfig } from "../resources";
@@ -152,6 +152,7 @@ function toPayload(fields: FieldDef[], values: Record<string, unknown>): Record<
 export function ResourceFormPage({ config, mode }: { config: ResourceConfig; mode: Mode }) {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const [form] = Form.useForm();
   const fields = config.fields[mode];
   const listPath = `/${config.path}`;
@@ -164,13 +165,21 @@ export function ResourceFormPage({ config, mode }: { config: ResourceConfig; mod
     queryOptions: { enabled: mode === "edit" && Boolean(id) },
   });
 
+  // Create modunda alanlar config'teki initialValue ile, ustune de query
+  // param'la on-secilebilir: /financial-records/create?project_id=... gibi.
+  // Yalnizca bu formda tanimli alanlar okunur.
   const initialValues =
     mode === "create"
-      ? Object.fromEntries(
-          fields
-            .filter((f) => f.initialValue !== undefined)
-            .map((f) => [f.name, f.initialValue]),
-        )
+      ? {
+          ...Object.fromEntries(
+            fields.filter((f) => f.initialValue !== undefined).map((f) => [f.name, f.initialValue]),
+          ),
+          ...Object.fromEntries(
+            fields
+              .filter((f) => searchParams.has(f.name))
+              .map((f) => [f.name, searchParams.get(f.name)]),
+          ),
+        }
       : undefined;
 
   useEffect(() => {
