@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
+import {
+  CONTACT_POSTAL_ADDRESS_JSON_LD,
+  CONTACT_PRIMARY_EMAIL,
+  CONTACT_PRIMARY_PHONE,
+} from "@/data/contactData";
 import "./globals.css";
 
 // Single refined sans — clean, corporate, minimal (Apple/Bosch feel)
@@ -83,15 +88,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     url: "https://armonitex.com.tr",
     logo: "https://armonitex.com.tr/logo.png",
     description: "İç mekan ve dış mekan dijital baskı, ışıklı/ışıksız tabela, araç giydirme ve fuar display sistemleri üretimi.",
-    telephone: "+90-216-420-70-52",
-    email: "derya@armonitex.com.tr",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "Yukarı Dudullu, Edep Sk. No:9, 34775",
-      addressLocality: "Ümraniye",
-      addressRegion: "İstanbul",
-      addressCountry: "TR"
-    },
+    telephone: CONTACT_PRIMARY_PHONE.href.replace("tel:", ""),
+    email: CONTACT_PRIMARY_EMAIL,
+    address: CONTACT_POSTAL_ADDRESS_JSON_LD,
     foundingDate: "1998",
     priceRange: "$$"
   };

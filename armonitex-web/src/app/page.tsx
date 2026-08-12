@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArchitectureTabs from "@/components/ArchitectureTabs";
+import { CONTACT_PRIMARY_PHONE } from "@/data/contactData";
 import Link from "next/link";
 
 interface Content {
@@ -286,8 +287,11 @@ export default async function HomePage() {
             <Link href="/iletisim" className="btn-primary-token text-base px-7 py-3.5">
               Hızlı Teklif Formu
             </Link>
-            <a href="tel:+902164207052" className="btn-secondary-token text-base px-7 py-3.5">
-              0216 420 70 52
+            <a
+              href={CONTACT_PRIMARY_PHONE.href}
+              className="btn-secondary-token text-base px-7 py-3.5"
+            >
+              {CONTACT_PRIMARY_PHONE.display}
             </a>
           </div>
         </div>

@@ -2,6 +2,15 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContactForm from "./ContactForm";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import {
+  CONTACT_ADDRESS,
+  CONTACT_ADDRESS_LINE,
+  CONTACT_COMPANY_NAME,
+  CONTACT_EMAILS,
+  CONTACT_HOURS,
+  CONTACT_MAP_QUERY,
+  CONTACT_PHONES,
+} from "@/data/contactData";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,7 +21,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "İletişim | Armonitex Dijital Baskı & Açıkhava Çözümleri",
-    description: "Yukarı Dudullu, Edep Sk. No:9, 34775 Ümraniye/İstanbul tesisimizden hızlı teklif ve bilgi alın.",
+    description: `${CONTACT_ADDRESS_LINE} tesisimizden hızlı teklif ve bilgi alın.`,
     url: "https://armonitex.com.tr/iletisim",
   },
 };
@@ -49,58 +58,57 @@ export default function IletisimPage() {
               <div className="space-y-5 text-sm">
                 <div>
                   <div className="form-label-token">Fabrika &amp; Üretim Adresi</div>
-                  <div className="font-semibold text-main-token">
-                    Armoni Reklam &amp; UPD Açıkhava Çözümleri
-                  </div>
+                  <div className="font-semibold text-main-token">{CONTACT_COMPANY_NAME}</div>
                   <div className="text-subtle-token mt-0.5 leading-relaxed">
-                    Yukarı Dudullu, Edep Sk. No:9<br />
-                    34775 Ümraniye / İstanbul, Türkiye
+                    {CONTACT_ADDRESS.street}<br />
+                    {CONTACT_ADDRESS.district}
                   </div>
                 </div>
 
                 <div className="pt-4 border-t border-token">
                   <div className="form-label-token">E-posta</div>
-                  <a
-                    href="mailto:derya@armonitex.com.tr"
-                    className="text-brand-token font-semibold hover:underline block"
-                  >
-                    derya@armonitex.com.tr
-                  </a>
-                </div>
-
-                <div className="pt-4 border-t border-token">
-                  <div className="form-label-token">Web</div>
-                  <a
-                    href="https://ateacikhava.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-brand-token font-semibold hover:underline block"
-                  >
-                    ateacikhava.com
-                  </a>
+                  <div className="space-y-1">
+                    {CONTACT_EMAILS.map((email) => (
+                      <a
+                        key={email}
+                        href={`mailto:${email}`}
+                        className="text-brand-token font-semibold hover:underline block"
+                      >
+                        {email}
+                      </a>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="pt-4 border-t border-token">
                   <div className="form-label-token">Telefon</div>
-                  <a
-                    href="tel:+902164207052"
-                    className="text-brand-token font-semibold text-base hover:underline block"
-                  >
-                    0216 420 70 52
-                  </a>
+                  <div className="space-y-1">
+                    {CONTACT_PHONES.map((phone) => (
+                      <a
+                        key={phone.href}
+                        href={phone.href}
+                        className="text-brand-token font-semibold text-base hover:underline block"
+                      >
+                        {phone.display}
+                      </a>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="pt-4 border-t border-token">
                   <div className="form-label-token">Çalışma Saatleri</div>
                   <div className="text-subtle-token">
-                    Hafta İçi: 08:30 - 18:30<br />
-                    Cumartesi: 09:00 - 14:00
+                    {CONTACT_HOURS.map((entry) => (
+                      <div key={entry.days}>
+                        {entry.days}: {entry.hours}
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
 
               <a
-                href="https://maps.google.com/?q=Yukarı+Dudullu+Edep+Sk+No+9+34775+Ümraniye+İstanbul"
+                href={`https://maps.google.com/?q=${encodeURIComponent(CONTACT_MAP_QUERY)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-secondary-token text-sm py-2.5 w-full justify-center"
@@ -123,14 +131,14 @@ export default function IletisimPage() {
               Üretim Tesisimiz Konumu
             </h2>
             <span className="text-xs text-subtle-token bg-cyan-soft-token px-3 py-1.5 rounded-md border border-cyan-token">
-              Yukarı Dudullu, Edep Sk. No:9, 34775 Ümraniye/İstanbul
+              {CONTACT_ADDRESS_LINE}
             </span>
           </div>
 
           <div className="rounded-2xl overflow-hidden border border-token shadow-md h-[400px] relative bg-canvas-token">
             <iframe
-              title="Armonitex Ümraniye Tesis Konumu"
-              src="https://maps.google.com/maps?q=Yukarı%20Dudullu%2C%20Edep%20Sk.%20No%3A9%2C%2034775%20%C3%9Cmraniye%2F%C4%B0stanbul&t=&z=16&ie=UTF8&iwloc=&output=embed"
+              title="Armonitex Şerifali Tesis Konumu"
+              src={`https://maps.google.com/maps?q=${encodeURIComponent(CONTACT_MAP_QUERY)}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
               width="100%"
               height="100%"
               style={{ border: 0 }}

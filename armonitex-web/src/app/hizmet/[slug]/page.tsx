@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import InteractiveCalculator from "@/components/InteractiveCalculator";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { servicesData } from "@/data/servicesData";
+import { CONTACT_POSTAL_ADDRESS_JSON_LD } from "@/data/contactData";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -60,13 +61,7 @@ export default async function ServiceDetailPage({
     provider: {
       "@type": "LocalBusiness",
       name: "Armonitex Dijital Baskı & Açıkhava Çözümleri",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Yukarı Dudullu, Edep Sk. No:9, 34775",
-        addressLocality: "Ümraniye",
-        addressRegion: "İstanbul",
-        addressCountry: "TR"
-      }
+      address: CONTACT_POSTAL_ADDRESS_JSON_LD
     },
     description: service.fullDescription,
     offers: {

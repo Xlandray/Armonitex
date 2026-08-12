@@ -1,5 +1,10 @@
 import Link from "next/link";
 import Logo from "./Logo";
+import {
+  CONTACT_ADDRESS_LINE,
+  CONTACT_EMAILS,
+  CONTACT_PHONES,
+} from "@/data/contactData";
 
 const YEAR = new Date().getFullYear();
 
@@ -54,29 +59,25 @@ export default function Footer() {
 
           <div className="space-y-5">
             <h4 className="text-sm font-semibold text-main-token mb-4">İletişim &amp; Adres</h4>
-            <p className="text-sm text-subtle-token leading-relaxed">
-              Yukarı Dudullu, Edep Sk. No:9, 34775 Ümraniye / İstanbul
-            </p>
-            <a
-              href="mailto:derya@armonitex.com.tr"
-              className="block text-sm text-subtle-token hover:text-brand-token transition-colors"
-            >
-              derya@armonitex.com.tr
-            </a>
-            <a
-              href="https://ateacikhava.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-sm text-subtle-token hover:text-brand-token transition-colors"
-            >
-              ateacikhava.com
-            </a>
-            <a
-              href="tel:+902164207052"
-              className="block text-sm font-semibold text-main-token hover:text-brand-token transition-colors"
-            >
-              0216 420 70 52
-            </a>
+            <p className="text-sm text-subtle-token leading-relaxed">{CONTACT_ADDRESS_LINE}</p>
+            {CONTACT_EMAILS.map((email) => (
+              <a
+                key={email}
+                href={`mailto:${email}`}
+                className="block text-sm text-subtle-token hover:text-brand-token transition-colors"
+              >
+                {email}
+              </a>
+            ))}
+            {CONTACT_PHONES.map((phone) => (
+              <a
+                key={phone.href}
+                href={phone.href}
+                className="block text-sm font-semibold text-main-token hover:text-brand-token transition-colors"
+              >
+                {phone.display}
+              </a>
+            ))}
           </div>
         </div>
 
