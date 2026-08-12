@@ -22,8 +22,26 @@ const writableFields: Record<string, Record<JsonResourceFormPageProps["mode"], s
     edit: ["value", "description"],
   },
   "admin/users": {
-    create: [],
-    edit: ["full_name", "is_active", "is_superuser"],
+    create: ["email", "full_name", "password", "is_customer"],
+    edit: ["full_name", "is_active", "is_superuser", "is_customer"],
+  },
+  "admin/projects": {
+    create: ["customer_id", "title", "description", "reference_no", "status"],
+    edit: ["title", "description", "reference_no", "status"],
+  },
+  "admin/financial-records": {
+    create: [
+      "project_id",
+      "type",
+      "number",
+      "amount",
+      "currency",
+      "status",
+      "issue_date",
+      "due_date",
+      "document_id",
+    ],
+    edit: ["number", "amount", "currency", "status", "issue_date", "due_date", "document_id"],
   },
 };
 

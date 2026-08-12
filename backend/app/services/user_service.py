@@ -4,7 +4,11 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import hash_password, verify_password
-from app.domain.exceptions import EmailAlreadyRegisteredError, InvalidCredentialsError
+from app.domain.exceptions import (
+    EmailAlreadyRegisteredError,
+    InvalidCredentialsError,
+    ResourceNotFoundError,
+)
 from app.models import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.user import UserCreate
@@ -54,4 +58,11 @@ class UserService:
         if user is None or not user.is_active:
             raise InvalidCredentialsError("User is not available.")
         return user
+
+    async def reset_password(self, user_id: uuid.UUID, new_password: str) -> None:
+        user = await self._users.get_by_id(user_id)
+        if user is None:
+            raise ResourceNotFoundError("User was not found.")
+        user.hashed_password = hash_password(new_password)
+        await self._session.commit()
 

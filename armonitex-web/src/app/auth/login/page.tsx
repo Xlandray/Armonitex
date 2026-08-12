@@ -1,32 +1,38 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
+function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const params = useSearchParams();
+  const next = params.get("next") ?? "/portal";
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
     setIsLoading(true);
     const formData = new FormData(e.currentTarget);
-    
-    // FastAPI OAuth2 standardı e-postayı 'username' olarak bekler
-    const body = new URLSearchParams();
-    body.append("username", formData.get("email") as string);
-    body.append("password", formData.get("password") as string);
-
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/token`, {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: body.toString(),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.get("email"),
+          password: formData.get("password"),
+        }),
       });
       if (res.ok) {
-        await res.json();
-        router.push("/"); 
+        router.push(next);
+        router.refresh();
+      } else {
+        const body = (await res.json().catch(() => ({}))) as { detail?: string };
+        setError(body.detail ?? "Giriş başarısız.");
       }
+    } catch {
+      setError("Sunucuya ulaşılamadı.");
     } finally {
       setIsLoading(false);
     }
@@ -39,6 +45,12 @@ export default function LoginPage() {
           Hesabınıza Giriş Yapın
         </h2>
       </div>
+
+      {error ? (
+        <p className="badge-magenta-token block text-center" role="alert">
+          {error}
+        </p>
+      ) : null}
 
       <form className="space-y-4" onSubmit={handleLogin}>
         <div>
@@ -63,11 +75,11 @@ export default function LoginPage() {
           />
         </div>
 
-        <div className="flex items-center justify-between text-sm">
-          <Link href="/auth/register" className="font-semibold text-brand-token hover:underline">
-            Hesap oluştur
-          </Link>
-          <Link href="/auth/forgot-password" className="font-semibold text-brand-token hover:underline">
+        <div className="flex items-center justify-end text-sm">
+          <Link
+            href="/auth/forgot-password"
+            className="font-semibold text-brand-token hover:underline"
+          >
             Şifremi unuttum
           </Link>
         </div>
@@ -81,5 +93,13 @@ export default function LoginPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<p className="text-muted-token text-center">Yükleniyor…</p>}>
+      <LoginForm />
+    </Suspense>
   );
 }

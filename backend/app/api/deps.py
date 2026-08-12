@@ -46,3 +46,15 @@ async def get_current_superuser(current_user: CurrentUser) -> User:
 
 
 CurrentSuperuser = Annotated[User, Depends(get_current_superuser)]
+
+
+async def get_current_customer(current_user: CurrentUser) -> User:
+    if not current_user.is_customer:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Customer access is required.",
+        )
+    return current_user
+
+
+CurrentCustomer = Annotated[User, Depends(get_current_customer)]

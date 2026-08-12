@@ -10,6 +10,7 @@ from app.models.mixins import TimestampMixin
 
 if TYPE_CHECKING:
     from app.models.content import Content
+    from app.models.project import Project
 
 
 class User(TimestampMixin, Base):
@@ -29,9 +30,17 @@ class User(TimestampMixin, Base):
     is_superuser: Mapped[bool] = mapped_column(
         Boolean, nullable=False, server_default=text("false")
     )
+    is_customer: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default=text("false")
+    )
 
     contents: Mapped[list["Content"]] = relationship(
         back_populates="author",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    projects: Mapped[list["Project"]] = relationship(
+        back_populates="customer",
         cascade="all, delete-orphan",
         passive_deletes=True,
     )
