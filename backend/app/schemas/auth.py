@@ -10,3 +10,8 @@ class Token(Schema):
 
 class TokenPayload(Schema):
     subject: str = Field(min_length=1)
+
+
+class ResetPasswordRequest(Schema):
+    token: str = Field(min_length=1)
+    new_password: str = Field(min_length=12, max_length=128)
