@@ -39,7 +39,10 @@ services:
     ports:
       - "${API_PORT:-8080}:8000"
     environment: *api_env
-    volumes:
+    # !override: base dosyadaki ./backend/app bind mount'u birlesmesin. Aksi
+    # halde prod, imajdaki kodu degil calisma agacini servis eder; makinede
+    # baska bir dala gecmek uretimi degistirir.
+    volumes: !override
       - portal_storage:/app/storage
     depends_on:
       migrate:
@@ -53,6 +56,8 @@ services:
       - "${ADMIN_PORT:-5180}:5173"
     environment:
       VITE_API_URL: https://armonitex-api.ataci.com.tr/api/v1
+    # Ayni gerekce: kaynak imajdan gelsin, calisma agacindan degil.
+    volumes: !override []
     depends_on:
       api:
         condition: service_started
