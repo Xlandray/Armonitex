@@ -12,7 +12,9 @@ class Settings(BaseSettings):
     database_url: str
     jwt_secret_key: SecretStr
     jwt_access_token_expire_minutes: int = 30
+    jwt_reset_token_expire_minutes: int = 30
     jwt_algorithm: str = "HS256"
+    storage_dir: str = "/app/storage"
     cors_allowed_origins: list[str] = ["http://localhost:5173", "http://localhost:3000"]
     smtp_host: str = "smtp.gmail.com"
     smtp_port: int = 587
