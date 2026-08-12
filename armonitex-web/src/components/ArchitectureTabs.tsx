@@ -69,43 +69,31 @@ export default function ArchitectureTabs() {
   const current = TAB_CONTENTS[activeTab];
 
   return (
-    <section className="relative bg-navy-gradient-token overflow-hidden border-y border-on-navy-token">
-      <div className="absolute inset-0 bg-grid-navy-token pointer-events-none" aria-hidden />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="max-w-2xl space-y-3 mb-10">
-          <div className="flex items-center gap-2 label-mono-navy-token">
-            <span className="reg-cross-token" aria-hidden />
-            Üretim Standartları
-          </div>
-          <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-white-token tracking-tight">
-            Uçtan Uca Kendi Bünyemizde Üretim
+    <section className="bg-white-token border-t border-token">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="max-w-2xl mb-12">
+          <p className="eyebrow-token">Üretim Standartları</p>
+          <h2 className="mt-3 text-3xl sm:text-4xl font-semibold text-main-token tracking-tight">
+            Uçtan uca kendi bünyemizde üretim
           </h2>
         </div>
 
-        {/* Tab navigation — technical toggles */}
-        <div className="flex flex-wrap gap-2 mb-10 border-b border-on-navy-token pb-4">
+        {/* Tab navigation — clean underline toggles */}
+        <div className="flex flex-wrap gap-x-8 gap-y-2 mb-12 border-b border-token">
           {TABS.map((tab) => {
             const active = activeTab === tab.key;
             return (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`group relative px-4 py-2.5 rounded-md font-display text-sm font-semibold transition-colors flex items-center gap-2 ${
-                  active
-                    ? "bg-navy-fill-token text-white-token"
-                    : "text-on-navy-muted hover:text-white-token"
+                className={`relative -mb-px px-1 pb-4 text-sm font-semibold transition-colors ${
+                  active ? "text-main-token" : "text-muted-token hover:text-main-token"
                 }`}
               >
-                <span
-                  className={`font-mono text-xs ${active ? "text-brand-token" : "text-on-navy-muted"}`}
-                >
-                  {tab.no}
-                </span>
                 {tab.label}
                 <span
-                  className={`absolute left-4 right-4 -bottom-[17px] h-0.5 rounded-full bg-brand-token origin-left transition-transform duration-300 ${
-                    active ? "scale-x-100" : "scale-x-0"
+                  className={`absolute left-0 right-0 bottom-0 h-0.5 bg-brand-token transition-opacity ${
+                    active ? "opacity-100" : "opacity-0"
                   }`}
                   aria-hidden
                 />
@@ -115,31 +103,28 @@ export default function ArchitectureTabs() {
         </div>
 
         {/* Content panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-start">
-          <div className="space-y-5">
-            <span className="badge-navy-token">{current.badge}</span>
-            <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-white-token tracking-tight">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+          <div>
+            <span className="badge-cyan-token">{current.badge}</span>
+            <h3 className="mt-5 text-2xl sm:text-3xl font-semibold text-main-token tracking-tight">
               {current.title}
             </h3>
-            <p className="text-on-navy-muted text-base leading-relaxed">{current.description}</p>
+            <p className="mt-4 text-subtle-token text-lg leading-relaxed">{current.description}</p>
           </div>
 
-          <div className="card-dark-token p-6 sm:p-8">
-            <div className="flex items-center gap-2 label-mono-navy-token mb-5">
-              <span className="reg-cross-navy-token" aria-hidden />
-              Öne Çıkan Standartlarımız
-            </div>
-            <ul className="space-y-4">
-              {current.features.map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm font-medium text-on-navy-token">
-                  <span className="mt-0.5 w-5 h-5 rounded-sm bg-brand-token text-white-token flex items-center justify-center text-xs font-bold shrink-0">
-                    ✓
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <ul className="space-y-4">
+            {current.features.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-3 text-base text-main-token border-b border-token pb-4"
+              >
+                <span className="mt-1 w-5 h-5 rounded-full bg-cyan-soft-token text-brand-token flex items-center justify-center text-xs font-bold shrink-0">
+                  ✓
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
