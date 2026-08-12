@@ -1,6 +1,6 @@
 import { useDelete } from "@refinedev/core";
 import { List, useTable } from "@refinedev/antd";
-import { Button, Input, Popconfirm, Space, Table } from "antd";
+import { Button, Empty, Input, Popconfirm, Space, Table } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
@@ -65,9 +65,33 @@ export function ResourceListPage({ config }: { config: ResourceConfig }) {
     </Space>
   );
 
+  // Bos tabloda antd'nin kuru "Veri Yok"u kaydın olmadigini degil, sayfanin
+  // bozuldugunu dusundurebiliyor. Hangi listenin bos oldugunu ve ne yapilacagini
+  // soyleyen bir metin bu karisikligi bastan onluyor.
+  const emptyText = (
+    <Empty
+      image={Empty.PRESENTED_IMAGE_SIMPLE}
+      description={
+        <Space direction="vertical" size={4}>
+          <span>{label} listesi boş.</span>
+          {canCreate ? (
+            <span style={{ fontSize: 12, opacity: 0.65 }}>
+              Sağ üstteki “Oluştur” ile ilk kaydı ekleyebilirsin.
+            </span>
+          ) : null}
+        </Space>
+      }
+    />
+  );
+
   return (
     <List title={label} headerButtons={headerButtons}>
-      <Table<ResourceRecord> {...tableProps} rowKey="id" scroll={{ x: true }}>
+      <Table<ResourceRecord>
+        {...tableProps}
+        rowKey="id"
+        scroll={{ x: true }}
+        locale={{ emptyText }}
+      >
         {columns.map((col) => (
           <Table.Column<ResourceRecord>
             key={col.dataIndex}

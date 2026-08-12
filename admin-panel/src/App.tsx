@@ -8,6 +8,7 @@ import {
   useNotificationProvider,
 } from "@refinedev/antd";
 import { App as AntdApp, ConfigProvider } from "antd";
+import trTR from "antd/locale/tr_TR";
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router";
 
 import "@refinedev/antd/dist/reset.css";
@@ -87,7 +88,10 @@ function AdminApp() {
 export default function App() {
   return (
     <BrowserRouter>
-      <ConfigProvider theme={RefineThemes.Blue}>
+      {/* antd'nin hazir metinleri varsayilan olarak Ingilizce gelir ("No data",
+          sayfalama, tarih secici, filtre butonlari). Panelin geri kalani Turkce
+          oldugu icin bu karisim, bos bir tabloyu bozuk gibi gosteriyordu. */}
+      <ConfigProvider theme={RefineThemes.Blue} locale={trTR}>
         <AntdApp>
           <AdminApp />
         </AntdApp>

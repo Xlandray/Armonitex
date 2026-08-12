@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Button, Popconfirm, Space, Table, Upload, message } from "antd";
+import { Button, Empty, Popconfirm, Space, Table, Upload, message } from "antd";
 import type { TableProps, UploadFile } from "antd";
 
 import { axiosInstance } from "../providers/axios";
@@ -124,6 +124,7 @@ export function ProjectDocuments({ projectId }: { projectId: string }) {
         pagination={false}
         size="small"
         onChange={onTableChange}
+        locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Bu projeye henüz doküman yüklenmemiş." /> }}
       >
         <Table.Column<DocumentRecord>
           dataIndex="original_filename"
