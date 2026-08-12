@@ -94,23 +94,33 @@ export default async function ContentDetailPage({
       
       <Header />
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <article className="card-token p-8 md:p-12 bg-white-token">
-          <Link
-            href="/"
-            className="inline-flex items-center text-sm font-semibold text-brand-token hover:underline mb-6"
-          >
-            ← Ana Sayfaya Dön
-          </Link>
+      <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <Link
+          href="/icerikler"
+          className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wider uppercase text-muted-token hover:text-brand-token transition-colors mb-8"
+        >
+          <span className="reg-cross-token" aria-hidden />
+          Tüm İçerikler
+        </Link>
 
-          <h1 className="text-3xl md:text-4xl font-extrabold text-main-token mb-6 leading-tight">
-            {content.title}
-          </h1>
+        <article className="space-y-8">
+          <header className="space-y-4 pb-8 border-b border-token">
+            <span className="badge-cyan-token">SEKTÖREL DUYURU</span>
+            <h1 className="font-display text-3xl md:text-5xl font-extrabold text-main-token leading-[1.08] tracking-tight">
+              {content.title}
+            </h1>
+          </header>
 
-          <div className="prose max-w-none text-subtle-token leading-relaxed space-y-4">
+          <div className="max-w-none text-subtle-token text-base leading-relaxed space-y-5">
             {content.body.split("\n").map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
+          </div>
+
+          <div className="pt-8 mt-8 border-t border-token">
+            <Link href="/iletisim" className="btn-primary-token">
+              Benzer Bir Proje İçin Teklif Alın →
+            </Link>
           </div>
         </article>
       </main>

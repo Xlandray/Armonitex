@@ -7,9 +7,10 @@ export interface BreadcrumbItem {
 
 interface BreadcrumbsProps {
   items: BreadcrumbItem[];
+  onDark?: boolean;
 }
 
-export default function Breadcrumbs({ items }: BreadcrumbsProps) {
+export default function Breadcrumbs({ items, onDark = false }: BreadcrumbsProps) {
   // Generate Schema.org BreadcrumbList JSON-LD
   const breadcrumbListJsonLd = {
     "@context": "https://schema.org",
@@ -36,19 +37,30 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbListJsonLd) }}
       />
-      <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs font-semibold text-subtle-token">
-        <Link href="/" className="hover:text-brand-token transition-colors flex items-center gap-1">
+      <nav
+        aria-label="Breadcrumb"
+        className={`flex items-center gap-2 font-mono text-[11px] tracking-wider uppercase ${
+          onDark ? "text-on-navy-muted" : "text-muted-token"
+        }`}
+      >
+        <Link
+          href="/"
+          className={onDark ? "hover:text-white-token transition-colors" : "hover:text-brand-token transition-colors"}
+        >
           Ana Sayfa
         </Link>
         {items.map((item, idx) => (
           <div key={idx} className="flex items-center gap-2">
-            <span className="text-subtle-token/40">/</span>
+            <span className="text-brand-token">/</span>
             {item.href ? (
-              <Link href={item.href} className="hover:text-brand-token transition-colors">
+              <Link
+                href={item.href}
+                className={onDark ? "hover:text-white-token transition-colors" : "hover:text-brand-token transition-colors"}
+              >
                 {item.label}
               </Link>
             ) : (
-              <span className="text-main-token font-bold">{item.label}</span>
+              <span className={onDark ? "text-white-token" : "text-main-token"}>{item.label}</span>
             )}
           </div>
         ))}

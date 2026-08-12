@@ -1,11 +1,29 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Archivo, Hanken_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
-const inter = Inter({
+// Display — characterful grotesk for headlines
+const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-archivo",
+  weight: ["500", "600", "700", "800", "900"],
+  display: "swap",
+});
+
+// Body — refined, highly readable grotesk
+const hanken = Hanken_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-hanken",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+// Technical — numerals, labels, eyebrows
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  variable: "--font-plex-mono",
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -95,14 +113,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <html lang="tr" className={`${inter.variable} h-full antialiased`}>
+    <html
+      lang="tr"
+      className={`${archivo.variable} ${hanken.variable} ${plexMono.variable} h-full antialiased`}
+    >
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
       </head>
-      <body className="min-h-full flex flex-col font-sans bg-white-token text-main-token selection:bg-[var(--color-primary)] selection:text-white">
+      <body className="min-h-full flex flex-col font-sans bg-white-token text-main-token">
         {children}
         {process.env.NEXT_PUBLIC_GA_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />

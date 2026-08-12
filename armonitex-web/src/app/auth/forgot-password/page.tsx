@@ -27,7 +27,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-center text-2xl font-bold tracking-tight text-main-token">
+        <h2 className="text-center font-display text-2xl font-extrabold tracking-tight text-main-token">
           Şifre Sıfırlama
         </h2>
         <p className="mt-2 text-center text-sm text-subtle-token">
@@ -36,18 +36,18 @@ export default function ForgotPasswordPage() {
       </div>
 
       {isSubmitted ? (
-        <div className="p-4 bg-blue-soft-token border border-blue-token text-brand-token text-sm rounded-lg text-center font-semibold">
+        <div className="p-4 bg-cyan-soft-token border border-cyan-token text-brand-token text-sm rounded-lg text-center font-semibold">
           Sıfırlama talimatları e-posta adresinize gönderildi!
         </div>
       ) : (
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-semibold text-main-token">E-posta Adresi</label>
+            <label className="form-label-token">E-posta Adresi</label>
             <input
               name="email"
               type="email"
               required
-              className="mt-1 block w-full px-3 py-2 bg-white-token border border-token rounded-md shadow-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-main-token"
+              className="input-token mt-1"
               placeholder="ornek@armonitex.com"
             />
           </div>
@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
       )}
 
       <div className="text-center text-sm">
-        <Link href="/auth/login" className="font-semibold text-brand-token hover:text-blue-700">
+        <Link href="/auth/login" className="font-semibold text-brand-token hover:underline">
           ← Giriş sayfasına dön
         </Link>
       </div>

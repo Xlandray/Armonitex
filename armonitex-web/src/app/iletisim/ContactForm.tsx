@@ -35,39 +35,40 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="card-token p-6 sm:p-8 bg-white-token space-y-5">
+      <div className="space-y-1 pb-4 border-b border-token">
+        <div className="flex items-center gap-2 label-mono-token">
+          <span className="reg-cross-token" aria-hidden />
+          Teklif Formu
+        </div>
+        <h2 className="font-display text-xl font-bold text-main-token">Projenizi Anlatın</h2>
+      </div>
       {status && (
         <div
           className={`p-4 rounded-md text-sm font-semibold border ${
             status.success
               ? "bg-cyan-soft-token border-cyan-token text-brand-token"
-              : "bg-magenta-soft-token border-pink-300 text-magenta-token"
+              : "bg-magenta-soft-token border-magenta-token text-magenta-token"
           }`}
         >
           {status.message}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-main-token">Ad Soyad *</label>
-            <input
-              name="name"
-              type="text"
-              required
-              className="mt-1 block w-full px-3 py-2 bg-white-token border border-token rounded-md text-sm text-main-token focus:ring-2 focus:ring-[var(--color-primary)]"
-              placeholder="Mert Simge"
-            />
+            <label className="form-label-token">Ad Soyad *</label>
+            <input name="name" type="text" required className="input-token" placeholder="Mert Simge" />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-main-token">E-posta *</label>
+            <label className="form-label-token">E-posta *</label>
             <input
               name="email"
               type="email"
               required
-              className="mt-1 block w-full px-3 py-2 bg-white-token border border-token rounded-md text-sm text-main-token focus:ring-2 focus:ring-[var(--color-primary)]"
+              className="input-token"
               placeholder="ornek@armonitex.com"
             />
           </div>
@@ -75,21 +76,13 @@ export default function ContactForm() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-main-token">Telefon</label>
-            <input
-              name="phone"
-              type="tel"
-              className="mt-1 block w-full px-3 py-2 bg-white-token border border-token rounded-md text-sm text-main-token focus:ring-2 focus:ring-[var(--color-primary)]"
-              placeholder="05xx xxx xx xx"
-            />
+            <label className="form-label-token">Telefon</label>
+            <input name="phone" type="tel" className="input-token" placeholder="05xx xxx xx xx" />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-main-token">Baskı / Hizmet Türü</label>
-            <select
-              name="service"
-              className="mt-1 block w-full px-3 py-2 bg-white-token border border-token rounded-md text-sm text-main-token focus:ring-2 focus:ring-[var(--color-primary)]"
-            >
+            <label className="form-label-token">Baskı / Hizmet Türü</label>
+            <select name="service" className="input-token">
               <option value="ic_mekan">İç Mekan Dijital Baskı</option>
               <option value="dis_mekan">Dış Mekan Vinil / Mesh Baskı</option>
               <option value="tabela">Işıklı / Işıksız Tabela &amp; Totem</option>
@@ -101,12 +94,12 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-main-token">Proje Detayları &amp; Mesajınız *</label>
+          <label className="form-label-token">Proje Detayları &amp; Mesajınız *</label>
           <textarea
             name="message"
             rows={4}
             required
-            className="mt-1 block w-full px-3 py-2 bg-white-token border border-token rounded-md text-sm text-main-token focus:ring-2 focus:ring-[var(--color-primary)]"
+            className="input-token"
             placeholder="Baskı ölçüleri, miktar ve teslim tarihi detaylarını belirtebilirsiniz..."
           ></textarea>
         </div>

@@ -40,41 +40,41 @@ export default function RegisterPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-center text-2xl font-bold tracking-tight text-main-token">
+        <h2 className="text-center font-display text-2xl font-extrabold tracking-tight text-main-token">
           Yeni Hesap Oluştur
         </h2>
       </div>
 
       <form className="space-y-4" onSubmit={handleRegister}>
         <div>
-          <label className="block text-sm font-semibold text-main-token">Ad Soyad</label>
+          <label className="form-label-token">Ad Soyad</label>
           <input
             name="full_name"
             type="text"
             required
-            className="mt-1 block w-full px-3 py-2 bg-white-token border border-token rounded-md shadow-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-main-token"
+            className="input-token mt-1"
             placeholder="Mert Simge"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-main-token">E-posta</label>
+          <label className="form-label-token">E-posta</label>
           <input
             name="email"
             type="email"
             required
-            className="mt-1 block w-full px-3 py-2 bg-white-token border border-token rounded-md shadow-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-main-token"
+            className="input-token mt-1"
             placeholder="ornek@armonitex.com"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-main-token">Şifre</label>
+          <label className="form-label-token">Şifre</label>
           <input
             name="password"
             type="password"
             required
-            className="mt-1 block w-full px-3 py-2 bg-white-token border border-token rounded-md shadow-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-main-token"
+            className="input-token mt-1"
             placeholder="••••••••"
           />
         </div>
@@ -88,7 +88,7 @@ export default function RegisterPage() {
         </button>
 
         <div className="text-center text-sm">
-          <Link href="/auth/login" className="font-semibold text-brand-token hover:text-blue-700">
+          <Link href="/auth/login" className="font-semibold text-brand-token hover:underline">
             Zaten hesabınız var mı? Giriş yapın
           </Link>
         </div>
