@@ -1,14 +1,20 @@
+import uuid
 from typing import Annotated
 
+import jwt
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import EmailStr
 
 from app.api.deps import SessionDep
 from app.core.email import send_email
-from app.core.security import create_access_token
-from app.domain.exceptions import InvalidCredentialsError
-from app.schemas.auth import Token
+from app.core.security import (
+    create_access_token,
+    create_password_reset_token,
+    decode_password_reset_token,
+)
+from app.domain.exceptions import InvalidCredentialsError, ResourceNotFoundError
+from app.schemas.auth import ResetPasswordRequest, Token
 from app.schemas.base import Schema
 from app.services.user_service import UserService
 
@@ -47,7 +53,7 @@ async def request_password_reset(
     try:
         user = await UserService(session).get_by_email(request_in.email)
         if user:
-            reset_token = create_access_token(str(user.id))
+            reset_token = create_password_reset_token(str(user.id))
             reset_url = f"https://armonitex.com.tr/auth/reset-password?token={reset_token}"
             subject = "Armonitex Şifre Sıfırlama Talebi"
             body = (
@@ -63,3 +69,24 @@ async def request_password_reset(
         pass
 
     return {"message": "Sıfırlama talimatları e-posta adresinize gönderildi."}
+
+
+@router.post("/reset-password")
+async def reset_password(
+    request_in: ResetPasswordRequest,
+    session: SessionDep,
+) -> dict[str, str]:
+    invalid_link = HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Geçersiz veya süresi dolmuş bağlantı.",
+    )
+    try:
+        subject = decode_password_reset_token(request_in.token)
+        user_id = uuid.UUID(subject)
+    except (jwt.PyJWTError, ValueError) as error:
+        raise invalid_link from error
+    try:
+        await UserService(session).reset_password(user_id, request_in.new_password)
+    except ResourceNotFoundError as error:
+        raise invalid_link from error
+    return {"message": "Şifreniz güncellendi."}
