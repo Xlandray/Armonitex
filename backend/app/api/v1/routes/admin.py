@@ -19,6 +19,7 @@ from app.schemas import (
     ContentSort,
     ContentUpdate,
     DocumentRead,
+    DocumentSort,
     FinancialRecordCreate,
     FinancialRecordRead,
     FinancialRecordSort,
@@ -338,8 +339,11 @@ async def list_documents(
     project_id: uuid.UUID,
     page: PageNumber = 1,
     page_size: PageSize = 25,
+    sort: DocumentSort = "-created_at",
 ) -> Page[DocumentRead]:
-    data, total = await DocumentService(session).list_for_project(project_id, page, page_size)
+    data, total = await DocumentService(session).list_for_project(
+        project_id, page, page_size, sort=sort
+    )
     return Page(data=[DocumentRead.model_validate(d) for d in data], total=total)
 
 

@@ -105,7 +105,7 @@ geçmez; allowlist dışı değer 422 döner.
 | users | email, full_name | `is_customer`, `is_superuser`, `is_active` | created_at, email |
 | projects | title, reference_no | `status`, `customer_id` | created_at, title, status |
 | financial-records | number | `type`, `status`, `project_id` | created_at, issue_date, due_date, amount |
-| documents | — | `project_id` (zorunlu kalır) | created_at |
+| documents | — | `project_id` (zorunlu kalır) | created_at, original_filename, size_bytes |
 
 - `q` → ilgili kolonlar üzerinde `ILIKE %...%` `OR` birleşimi.
 - `sort` biçimi: `created_at` (artan) / `-created_at` (azalan).

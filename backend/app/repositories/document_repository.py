@@ -1,9 +1,16 @@
 import uuid
 
-from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import InstrumentedAttribute
 
 from app.models import Document
+from app.repositories._paging import paginate, sort_clause
+
+SORT_COLUMNS: dict[str, InstrumentedAttribute] = {
+    "created_at": Document.created_at,
+    "original_filename": Document.original_filename,
+    "size_bytes": Document.size_bytes,
+}
 
 
 class DocumentRepository:
@@ -14,14 +21,24 @@ class DocumentRepository:
         return await self._session.get(Document, document_id)
 
     async def list_for_project(
-        self, project_id: uuid.UUID, offset: int, limit: int
+        self,
+        project_id: uuid.UUID,
+        offset: int,
+        limit: int,
+        *,
+        sort: str = "-created_at",
     ) -> tuple[list[Document], int]:
-        base = select(Document).where(Document.project_id == project_id)
-        result = await self._session.execute(
-            base.order_by(Document.created_at.desc()).offset(offset).limit(limit)
+        # Shared with the customer portal, unlike the other repositories' list().
+        # The default sort reproduces the portal's previous ORDER BY exactly, so
+        # only the admin route — which passes an explicit key — sees a change.
+        return await paginate(
+            self._session,
+            Document,
+            conditions=(Document.project_id == project_id,),
+            order_by=sort_clause(SORT_COLUMNS, sort),
+            offset=offset,
+            limit=limit,
         )
-        total = await self._session.scalar(select(func.count()).select_from(base.subquery()))
-        return list(result.scalars()), total or 0
 
     def add(self, document: Document) -> None:
         self._session.add(document)

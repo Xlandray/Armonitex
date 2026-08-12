@@ -3,7 +3,7 @@
 from app.schemas.auth import ResetPasswordRequest, Token, TokenPayload
 from app.schemas.contact import ContactCreate, ContactResponse
 from app.schemas.content import ContentCreate, ContentRead, ContentSort, ContentUpdate
-from app.schemas.document import DocumentRead
+from app.schemas.document import DocumentRead, DocumentSort
 from app.schemas.financial_record import (
     AdminFinancialRecordRead,
     FinancialRecordCreate,
@@ -43,6 +43,7 @@ __all__ = [
     "ContentSort",
     "ContentUpdate",
     "DocumentRead",
+    "DocumentSort",
     "FinancialRecordCreate",
     "FinancialRecordRead",
     "FinancialRecordSort",
