@@ -11,9 +11,7 @@ PROJECT_STATUSES = ("teklif", "onaylandi", "uretimde", "tamamlandi", "iptal")
 
 # Sort keys accepted by GET /admin/projects. Every key here must have a matching
 # column in ProjectRepository.SORT_COLUMNS.
-ProjectSort = Literal[
-    "created_at", "-created_at", "title", "-title", "status", "-status"
-]
+ProjectSort = Literal["created_at", "-created_at", "title", "-title", "status", "-status"]
 
 
 class ProjectCreate(Schema):

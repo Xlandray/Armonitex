@@ -24,9 +24,7 @@ class DocumentService:
     async def list_for_project(
         self, project_id: uuid.UUID, page: int, page_size: int
     ) -> tuple[list[Document], int]:
-        return await self._documents.list_for_project(
-            project_id, (page - 1) * page_size, page_size
-        )
+        return await self._documents.list_for_project(project_id, (page - 1) * page_size, page_size)
 
     async def create(
         self, project_id: uuid.UUID, file: UploadFile, uploaded_by: uuid.UUID

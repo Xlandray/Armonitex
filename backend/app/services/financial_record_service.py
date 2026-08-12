@@ -76,9 +76,7 @@ class FinancialRecordService:
     def _validate_status(self, record_type: str, status: str) -> None:
         allowed = QUOTE_STATUSES if record_type == "quote" else INVOICE_STATUSES
         if status not in allowed:
-            raise ResourceConflictError(
-                f"Status '{status}' is not valid for type '{record_type}'."
-            )
+            raise ResourceConflictError(f"Status '{status}' is not valid for type '{record_type}'.")
 
     async def _commit(self, record: FinancialRecord) -> None:
         try:

@@ -36,7 +36,9 @@ def upgrade() -> None:
         sa.Column("title", sa.String(length=255), nullable=False),
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column("reference_no", sa.String(length=64), nullable=True),
-        sa.Column("status", sa.String(length=32), server_default=sa.text("'teklif'"), nullable=False),
+        sa.Column(
+            "status", sa.String(length=32), server_default=sa.text("'teklif'"), nullable=False
+        ),
         sa.Column(
             "created_at",
             sa.DateTime(timezone=True),

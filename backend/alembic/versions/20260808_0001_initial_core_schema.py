@@ -20,16 +20,14 @@ depends_on: str | Sequence[str] | None = None
 
 def upgrade() -> None:
     op.execute("CREATE EXTENSION IF NOT EXISTS pgcrypto")
-    op.execute(
-        """
+    op.execute("""
         CREATE FUNCTION set_updated_at() RETURNS trigger AS $$
         BEGIN
             NEW.updated_at = CURRENT_TIMESTAMP;
             RETURN NEW;
         END;
         $$ LANGUAGE plpgsql
-        """
-    )
+        """)
 
     op.create_table(
         "users",

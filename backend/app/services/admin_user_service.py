@@ -48,9 +48,7 @@ class AdminUserService:
             await self._session.commit()
         except IntegrityError as error:
             await self._session.rollback()
-            raise EmailAlreadyRegisteredError(
-                "A user with this email already exists."
-            ) from error
+            raise EmailAlreadyRegisteredError("A user with this email already exists.") from error
         await self._session.refresh(user)
         return user
 

@@ -37,9 +37,7 @@ async def paginate[ModelT](
     return list(rows.scalars()), total or 0
 
 
-def sort_clause(
-    columns: dict[str, InstrumentedAttribute[Any]], sort: str
-) -> tuple[Any, ...]:
+def sort_clause(columns: dict[str, InstrumentedAttribute[Any]], sort: str) -> tuple[Any, ...]:
     """Map a sort key ("title" ascending, "-title" descending) onto ORDER BY.
 
     The route layer constrains ``sort`` with a ``Literal``, so every value that
