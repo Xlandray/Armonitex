@@ -19,19 +19,19 @@ export const servicesData: ServiceItem[] = [
     slug: "ic-mekan-dijital-baski",
     title: "İç Mekan Dijital Baskı",
     shortDesc: "Yüksek çözünürlüklü poster, afiş, kanvas tablo, duratrans ve fotoblok iç mekan grafik baskıları.",
-    badge: "1440 DPI High-Res",
+    badge: "Yüksek Çözünürlük",
     codeNumber: "01",
     unitPriceEstimate: 250,
-    fullDescription: "Armonitex iç mekan dijital baskı tesislerimizde, kokusuz ve çevre dostu su bazlı ve pigment mürekkepler ile mağaza içi görseller, sergi panoları, kanvas tablolar ve yüksek kaliteli poster üretimi gerçekleştirmekteyiz. 1440 DPI yüksek çözünürlüklü baskı teknolojimiz ile en ince detayları ve canlı renkleri kusursuz biçimde yansıtıyoruz.",
+    fullDescription: "Armonitex iç mekan dijital baskı tesislerimizde, kokusuz ve çevre dostu su bazlı ve pigment mürekkepler ile mağaza içi görseller, sergi panoları, kanvas tablolar ve yüksek kaliteli poster üretimi gerçekleştirmekteyiz. Yüksek çözünürlüklü baskı teknolojimiz ile en ince detayları ve canlı renkleri kusursuz biçimde yansıtıyoruz.",
     features: [
-      "1440 DPI İleri Çözünürlüklü Baskı Kalitesi",
+      "İleri Çözünürlüklü Baskı Kalitesi",
       "Kokusuz ve İnsan Sağlığına Zararsız Eko-Solvent & Pigment Mürekkep",
       "Fotoblok, Foreks (PVC Dekota) ve Paspartu Sıvama Opsiyonları",
       "Mat, Parlak ve Dokulu Laminasyon Koruma Seçenekleri"
     ],
     specifications: [
       { label: "Maksimum En", value: "160 cm (Kesintisiz Tek Parça)" },
-      { label: "Baskı Çözünürlüğü", value: "1440 DPI High-Res" },
+      { label: "Baskı Çözünürlüğü", value: "Yüksek Çözünürlük" },
       { label: "Malzeme Çeşitleri", value: "Kuşe Kağıt, PP Film, Duratrans, Kanvas, Fotoblok" },
       { label: "Teslimat Süresi", value: "24-48 Saat" }
     ],
