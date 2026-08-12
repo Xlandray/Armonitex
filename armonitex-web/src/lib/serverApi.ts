@@ -1,6 +1,9 @@
 import { cookies } from "next/headers";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://api:8000/api/v1";
+// Server-only base URL. Prefer API_URL (read at runtime) over NEXT_PUBLIC_API_URL,
+// which Next inlines at build time and so cannot be overridden per-environment.
+const API_BASE =
+  process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://api:8000/api/v1";
 export const SESSION_COOKIE = "access_token";
 
 export class UnauthorizedError extends Error {}

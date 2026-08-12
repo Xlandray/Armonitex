@@ -66,6 +66,8 @@ services:
       - "${WEB_PORT:-3005}:3000"
     environment:
       NEXT_PUBLIC_API_URL: http://api:8000/api/v1
+      # Server-side (route handlers, server components) reach the API over the internal network.
+      API_URL: http://api:8000/api/v1
     depends_on:
       api:
         condition: service_started
