@@ -26,6 +26,7 @@ services:
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:-noreply@armonitex.com.tr}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-change-me}
+      STORAGE_DIR: /app/storage
     depends_on:
       db:
         condition: service_healthy
@@ -38,6 +39,8 @@ services:
     ports:
       - "${API_PORT:-8080}:8000"
     environment: *api_env
+    volumes:
+      - portal_storage:/app/storage
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -70,3 +73,4 @@ services:
 
 volumes:
   postgres_prod_data:
+  portal_storage:
