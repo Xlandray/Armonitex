@@ -9,7 +9,7 @@ interface ContentItem {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 1. Sabit Sayfalar (Statik Rotalar)
-  const staticRoutes = ["", "/kurumsal", "/icerikler", "/iletisim", "/auth/login", "/auth/register"].map((route) => ({
+  const staticRoutes = ["", "/kurumsal", "/icerikler", "/iletisim", "/auth/login"].map((route) => ({
     url: `https://armonitex.com.tr${route}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
