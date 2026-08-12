@@ -52,7 +52,7 @@ services:
     ports:
       - "${ADMIN_PORT:-5180}:5173"
     environment:
-      VITE_API_URL: https://api.armonitex.com.tr/api/v1
+      VITE_API_URL: https://armonitex-api.ataci.com.tr/api/v1
     depends_on:
       api:
         condition: service_started
