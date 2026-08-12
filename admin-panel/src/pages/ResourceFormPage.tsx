@@ -1,4 +1,5 @@
 import { useCreate, useOne, useUpdate } from "@refinedev/core";
+import type { HttpError } from "@refinedev/core";
 import { Create, Edit } from "@refinedev/antd";
 import { DatePicker, Form, Input, InputNumber, Select, Switch, message } from "antd";
 import type { Rule } from "antd/es/form";
@@ -8,6 +9,7 @@ import { useNavigate, useParams } from "react-router";
 
 import { axiosInstance } from "../providers/axios";
 import type { FieldDef, ResourceConfig } from "../resources";
+import { errorMessage } from "../utils/errors";
 
 type Mode = "create" | "edit";
 
@@ -34,7 +36,7 @@ function ResourceSelect({ field, ...rest }: { field: FieldDef }) {
           })),
         );
       })
-      .catch(() => message.error("Seçenekler yüklenemedi."))
+      .catch((error) => message.error(errorMessage(error, "Seçenekler yüklenemedi.")))
       .finally(() => setLoading(false));
   }, [field]);
 
@@ -126,8 +128,22 @@ function toPayload(fields: FieldDef[], values: Record<string, unknown>): Record<
       if (v !== undefined && v !== null) payload[field.name] = v;
       continue;
     }
-    // text / password / select / resourceSelect: bos opsiyonelleri gonderme
-    if (v === undefined || v === null || v === "") continue;
+    const isBlank = v === undefined || v === null || v === "";
+
+    // text / textarea: bos birakmak "alani temizle" demek -> null gonderilir.
+    // Backend'de bu alanlar str | None; bos string min_length'e takilirdi.
+    if (field.type === "text" || field.type === "textarea") {
+      if (isBlank) {
+        if (!field.required) payload[field.name] = null;
+        continue;
+      }
+      payload[field.name] = v;
+      continue;
+    }
+
+    // password / select / resourceSelect: bos birakilan alan hic gonderilmez,
+    // boylece bos birakilan sifre alani mevcut sifreyi degistirmez.
+    if (isBlank) continue;
     payload[field.name] = v;
   }
   return payload;
@@ -172,19 +188,33 @@ export function ResourceFormPage({ config, mode }: { config: ResourceConfig; mod
     form.setFieldsValue(next);
   }, [form, mode, query.data, fields]);
 
+  // axios interceptor'i 422 govdesini HttpError.errors'a cevirir; buradaki is
+  // sadece o haritayi formdaki alanlara baglamak. Genel mesaji zaten
+  // notificationProvider gosteriyor.
+  const applyFieldErrors = (error: HttpError) => {
+    const fieldNames = new Set(fields.map((f) => f.name));
+    const entries = Object.entries(error?.errors ?? {})
+      .filter(([name]) => fieldNames.has(name))
+      .map(([name, value]) => ({
+        name,
+        errors: (Array.isArray(value) ? value : [value]).map(String),
+      }));
+    if (entries.length > 0) form.setFields(entries);
+  };
+
   const submit = (values: Record<string, unknown>) => {
     const payload = toPayload(fields, values);
     if (!payload) return;
     if (mode === "create") {
       createRecord(
         { resource: config.name, values: payload },
-        { onSuccess: () => navigate(listPath) },
+        { onSuccess: () => navigate(listPath), onError: applyFieldErrors },
       );
       return;
     }
     updateRecord(
       { resource: config.name, id: id ?? "", values: payload },
-      { onSuccess: () => navigate(listPath) },
+      { onSuccess: () => navigate(listPath), onError: applyFieldErrors },
     );
   };
 

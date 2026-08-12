@@ -3,6 +3,7 @@ import { Button, Card, Popconfirm, Select, Space, Table, Upload, message } from 
 import type { UploadFile } from "antd";
 
 import { axiosInstance } from "../providers/axios";
+import { errorMessage } from "../utils/errors";
 
 type ProjectRecord = { id: string; title: string; reference_no: string | null };
 type DocumentRecord = {
@@ -25,7 +26,7 @@ export function DocumentsPage() {
     axiosInstance
       .get<PageResponse<ProjectRecord>>("/admin/projects", { params: { page_size: 100 } })
       .then((res) => setProjects(res.data.data))
-      .catch(() => message.error("Projeler yüklenemedi."));
+      .catch((error) => message.error(errorMessage(error, "Projeler yüklenemedi.")));
   }, []);
 
   const loadDocuments = (id: string) => {
@@ -34,7 +35,7 @@ export function DocumentsPage() {
         params: { project_id: id, page_size: 100 },
       })
       .then((res) => setDocuments(res.data.data))
-      .catch(() => message.error("Dokümanlar yüklenemedi."));
+      .catch((error) => message.error(errorMessage(error, "Dokümanlar yüklenemedi.")));
   };
 
   const onSelectProject = (id: string) => {
@@ -53,8 +54,8 @@ export function DocumentsPage() {
       message.success("Doküman yüklendi.");
       setFileList([]);
       loadDocuments(projectId);
-    } catch {
-      message.error("Yükleme başarısız.");
+    } catch (error) {
+      message.error(errorMessage(error, "Yükleme başarısız."));
     } finally {
       setUploading(false);
     }
@@ -64,8 +65,8 @@ export function DocumentsPage() {
     try {
       await axiosInstance.delete(`/admin/documents/${id}`);
       if (projectId) loadDocuments(projectId);
-    } catch {
-      message.error("Silme başarısız.");
+    } catch (error) {
+      message.error(errorMessage(error, "Silme başarısız."));
     }
   };
 
