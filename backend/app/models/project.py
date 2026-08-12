@@ -31,9 +31,7 @@ class Project(TimestampMixin, Base):
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     reference_no: Mapped[str | None] = mapped_column(String(64), nullable=True)
-    status: Mapped[str] = mapped_column(
-        String(32), nullable=False, server_default=text("'teklif'")
-    )
+    status: Mapped[str] = mapped_column(String(32), nullable=False, server_default=text("'teklif'"))
 
     customer: Mapped["User"] = relationship(back_populates="projects")
     financial_records: Mapped[list["FinancialRecord"]] = relationship(

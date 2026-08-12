@@ -1,9 +1,14 @@
 import uuid
 from datetime import datetime
+from typing import Literal
 
 from pydantic import EmailStr, Field
 
 from app.schemas.base import Schema
+
+# Sort keys accepted by GET /admin/users. Every key here must have a matching
+# column in UserRepository.SORT_COLUMNS.
+UserSort = Literal["created_at", "-created_at", "email", "-email"]
 
 
 class UserCreate(Schema):
@@ -29,6 +34,7 @@ class AdminUserUpdate(Schema):
     is_active: bool | None = None
     is_superuser: bool | None = None
     is_customer: bool | None = None
+    password: str | None = Field(default=None, min_length=12, max_length=128)
 
 
 class UserRead(Schema):
@@ -40,3 +46,11 @@ class UserRead(Schema):
     is_customer: bool
     created_at: datetime
     updated_at: datetime
+
+
+class UserBrief(Schema):
+    """Just enough of a user to label and link to it from another resource."""
+
+    id: uuid.UUID
+    email: EmailStr
+    full_name: str | None

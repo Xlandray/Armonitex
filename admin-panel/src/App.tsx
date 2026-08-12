@@ -1,212 +1,99 @@
+import { Fragment } from "react";
 import { Authenticated, Refine } from "@refinedev/core";
 import routerProvider, { CatchAllNavigate, NavigateToResource } from "@refinedev/react-router";
-import { ErrorComponent, RefineThemes, ThemedLayout } from "@refinedev/antd";
+import {
+  ErrorComponent,
+  RefineThemes,
+  ThemedLayout,
+  useNotificationProvider,
+} from "@refinedev/antd";
 import { App as AntdApp, ConfigProvider } from "antd";
+import trTR from "antd/locale/tr_TR";
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router";
 
 import "@refinedev/antd/dist/reset.css";
 
 import { LoginPage } from "./pages/LoginPage";
-import { JsonResourceFormPage } from "./pages/JsonResourceFormPage";
 import { ResourceListPage } from "./pages/ResourceListPage";
+import { ResourceFormPage } from "./pages/ResourceFormPage";
 import { DocumentsPage } from "./pages/DocumentsPage";
+import { ProjectShowPage } from "./pages/ProjectShowPage";
+import { RESOURCES } from "./resources";
 import { authProvider } from "./providers/authProvider";
 import { dataProvider } from "./providers/dataProvider";
 
-const resources = [
-  {
-    name: "admin/contents",
-    list: "/contents",
-    create: "/contents/create",
-    edit: "/contents/edit/:id",
-    meta: { label: "İçerikler" },
-  },
-  {
-    name: "admin/settings",
-    list: "/settings",
-    create: "/settings/create",
-    edit: "/settings/edit/:id",
-    meta: { label: "Ayarlar" },
-  },
-  {
-    name: "admin/users",
-    list: "/users",
-    create: "/users/create",
-    edit: "/users/edit/:id",
-    meta: { label: "Kullanıcılar" },
-  },
-  {
-    name: "admin/projects",
-    list: "/projects",
-    create: "/projects/create",
-    edit: "/projects/edit/:id",
-    meta: { label: "Projeler" },
-  },
-  {
-    name: "admin/financial-records",
-    list: "/financial-records",
-    create: "/financial-records/create",
-    edit: "/financial-records/edit/:id",
-    meta: { label: "Teklif/Fatura" },
-  },
-  {
-    name: "admin/documents",
-    list: "/documents",
-    meta: { label: "Dokümanlar" },
-  },
+const refineResources = [
+  ...RESOURCES.map((r) => ({
+    name: r.name,
+    list: `/${r.path}`,
+    create: `/${r.path}/create`,
+    edit: `/${r.path}/edit/:id`,
+    ...(r.hasShow ? { show: `/${r.path}/show/:id` } : {}),
+    meta: { label: r.label },
+  })),
+  { name: "admin/documents", list: "/documents", meta: { label: "Dokümanlar" } },
 ];
+
+// useNotificationProvider antd'nin message context'ini kullanir, bu yuzden
+// <AntdApp>'in altinda cagrilmak zorunda; App govdesinde cagrilirsa context
+// disinda kalir ve hicbir bildirim gorunmez.
+function AdminApp() {
+  const notificationProvider = useNotificationProvider();
+
+  return (
+    <Refine
+      authProvider={authProvider}
+      dataProvider={{ default: dataProvider }}
+      notificationProvider={notificationProvider}
+      routerProvider={routerProvider}
+      resources={refineResources}
+    >
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          element={
+            <Authenticated key="admin-auth" fallback={<CatchAllNavigate to="/login" />}>
+              <ThemedLayout>
+                <Outlet />
+              </ThemedLayout>
+            </Authenticated>
+          }
+        >
+          <Route index element={<NavigateToResource resource="admin/contents" />} />
+          {RESOURCES.map((config) => (
+            <Fragment key={config.name}>
+              <Route path={`/${config.path}`} element={<ResourceListPage config={config} />} />
+              <Route
+                path={`/${config.path}/create`}
+                element={<ResourceFormPage config={config} mode="create" />}
+              />
+              <Route
+                path={`/${config.path}/edit/:id`}
+                element={<ResourceFormPage config={config} mode="edit" />}
+              />
+            </Fragment>
+          ))}
+          {/* Proje detayi config'ten uretilemez (kendi duzeni ve alt tablolari
+              var), bu yuzden rotasi burada elle tanimli. */}
+          <Route path="/projects/show/:id" element={<ProjectShowPage />} />
+          <Route path="/documents" element={<DocumentsPage />} />
+          <Route path="*" element={<ErrorComponent />} />
+        </Route>
+        <Route path="*" element={<Navigate replace to="/login" />} />
+      </Routes>
+    </Refine>
+  );
+}
 
 export default function App() {
   return (
     <BrowserRouter>
-      <ConfigProvider theme={RefineThemes.Blue}>
+      {/* antd'nin hazir metinleri varsayilan olarak Ingilizce gelir ("No data",
+          sayfalama, tarih secici, filtre butonlari). Panelin geri kalani Turkce
+          oldugu icin bu karisim, bos bir tabloyu bozuk gibi gosteriyordu. */}
+      <ConfigProvider theme={RefineThemes.Blue} locale={trTR}>
         <AntdApp>
-          <Refine
-            authProvider={authProvider}
-            dataProvider={{ default: dataProvider }}
-            routerProvider={routerProvider}
-            resources={resources}
-          >
-            <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route
-                element={
-                  <Authenticated key="admin-auth" fallback={<CatchAllNavigate to="/login" />}>
-                    <ThemedLayout>
-                      <Outlet />
-                    </ThemedLayout>
-                  </Authenticated>
-                }
-              >
-                <Route index element={<NavigateToResource resource="admin/contents" />} />
-                <Route
-                  path="/contents"
-                  element={<ResourceListPage resource="admin/contents" title="İçerikler" />}
-                />
-                <Route
-                  path="/contents/create"
-                  element={
-                    <JsonResourceFormPage
-                      resource="admin/contents"
-                      title="İçerik oluştur"
-                      mode="create"
-                    />
-                  }
-                />
-                <Route
-                  path="/contents/edit/:id"
-                  element={
-                    <JsonResourceFormPage
-                      resource="admin/contents"
-                      title="İçerik düzenle"
-                      mode="edit"
-                    />
-                  }
-                />
-                <Route
-                  path="/settings"
-                  element={<ResourceListPage resource="admin/settings" title="Ayarlar" />}
-                />
-                <Route
-                  path="/settings/create"
-                  element={
-                    <JsonResourceFormPage
-                      resource="admin/settings"
-                      title="Ayar oluştur"
-                      mode="create"
-                    />
-                  }
-                />
-                <Route
-                  path="/settings/edit/:id"
-                  element={
-                    <JsonResourceFormPage
-                      resource="admin/settings"
-                      title="Ayar düzenle"
-                      mode="edit"
-                    />
-                  }
-                />
-                <Route
-                  path="/users"
-                  element={<ResourceListPage resource="admin/users" title="Kullanıcılar" />}
-                />
-                <Route
-                  path="/users/create"
-                  element={
-                    <JsonResourceFormPage
-                      resource="admin/users"
-                      title="Kullanıcı oluştur"
-                      mode="create"
-                    />
-                  }
-                />
-                <Route
-                  path="/users/edit/:id"
-                  element={
-                    <JsonResourceFormPage
-                      resource="admin/users"
-                      title="Kullanıcı düzenle"
-                      mode="edit"
-                    />
-                  }
-                />
-                <Route
-                  path="/projects"
-                  element={<ResourceListPage resource="admin/projects" title="Projeler" />}
-                />
-                <Route
-                  path="/projects/create"
-                  element={
-                    <JsonResourceFormPage
-                      resource="admin/projects"
-                      title="Proje oluştur"
-                      mode="create"
-                    />
-                  }
-                />
-                <Route
-                  path="/projects/edit/:id"
-                  element={
-                    <JsonResourceFormPage
-                      resource="admin/projects"
-                      title="Proje düzenle"
-                      mode="edit"
-                    />
-                  }
-                />
-                <Route
-                  path="/financial-records"
-                  element={
-                    <ResourceListPage resource="admin/financial-records" title="Teklif/Fatura" />
-                  }
-                />
-                <Route
-                  path="/financial-records/create"
-                  element={
-                    <JsonResourceFormPage
-                      resource="admin/financial-records"
-                      title="Teklif/Fatura oluştur"
-                      mode="create"
-                    />
-                  }
-                />
-                <Route
-                  path="/financial-records/edit/:id"
-                  element={
-                    <JsonResourceFormPage
-                      resource="admin/financial-records"
-                      title="Teklif/Fatura düzenle"
-                      mode="edit"
-                    />
-                  }
-                />
-                <Route path="/documents" element={<DocumentsPage />} />
-                <Route path="*" element={<ErrorComponent />} />
-              </Route>
-              <Route path="*" element={<Navigate replace to="/login" />} />
-            </Routes>
-          </Refine>
+          <AdminApp />
         </AntdApp>
       </ConfigProvider>
     </BrowserRouter>

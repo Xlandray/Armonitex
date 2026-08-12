@@ -37,7 +37,7 @@ Remove-Item Env:ADMIN_EMAIL, Env:ADMIN_PASSWORD
 ## Per-app commands
 
 **backend/** (run inside the `api` container, or a local venv with the deps in `pyproject.toml`):
-- Lint/format: `ruff check .` and `black .` (line length 100; ruff rules `E,F,I,UP,B,SIM,RUF`).
+- Lint/format: `ruff check .` and `black .` (line length 100; ruff rules `E,F,I,UP,B,SIM,RUF`). Both tools are pinned in the `dev` extra — install with `pip install -e ".[dev]"`, because black's stable style changes yearly and an unpinned black reformats files it did not write.
 - Migrations: `alembic revision --autogenerate -m "msg"` then `alembic upgrade head`. Autogenerate works because `alembic/env.py` imports `app.models` and diffs against `Base.metadata` — **any new model must be exported from `app/models/__init__.py`** or it won't be seen.
 - There is **no backend test suite** yet — do not claim tests pass.
 

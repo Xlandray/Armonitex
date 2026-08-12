@@ -1,9 +1,14 @@
 import uuid
 from datetime import datetime
+from typing import Literal
 
 from pydantic import Field, JsonValue
 
 from app.schemas.base import Schema
+
+# Sort keys accepted by GET /admin/settings. Every key here must have a matching
+# column in SettingRepository.SORT_COLUMNS.
+SettingSort = Literal["key", "-key", "created_at", "-created_at"]
 
 
 class SettingCreate(Schema):

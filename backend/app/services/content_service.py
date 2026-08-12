@@ -14,8 +14,22 @@ class ContentService:
         self._session = session
         self._contents = ContentRepository(session)
 
-    async def list(self, page: int, page_size: int) -> tuple[list[Content], int]:
-        return await self._contents.list((page - 1) * page_size, page_size)
+    async def list(
+        self,
+        page: int,
+        page_size: int,
+        *,
+        q: str | None = None,
+        is_published: bool | None = None,
+        sort: str = "-created_at",
+    ) -> tuple[list[Content], int]:
+        return await self._contents.list(
+            (page - 1) * page_size,
+            page_size,
+            q=q,
+            is_published=is_published,
+            sort=sort,
+        )
 
     async def get(self, content_id: uuid.UUID) -> Content:
         content = await self._contents.get_by_id(content_id)

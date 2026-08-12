@@ -40,9 +40,7 @@ class PortalService:
         self, customer_id: uuid.UUID, project_id: uuid.UUID, page: int, page_size: int
     ) -> tuple[list[Document], int]:
         await self.get_project(customer_id, project_id)  # ownership gate
-        return await self._documents.list_for_project(
-            project_id, (page - 1) * page_size, page_size
-        )
+        return await self._documents.list_for_project(project_id, (page - 1) * page_size, page_size)
 
     async def get_document_for_download(
         self, customer_id: uuid.UUID, document_id: uuid.UUID

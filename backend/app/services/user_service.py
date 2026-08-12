@@ -65,4 +65,3 @@ class UserService:
             raise ResourceNotFoundError("User was not found.")
         user.hashed_password = hash_password(new_password)
         await self._session.commit()
-

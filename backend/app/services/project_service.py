@@ -14,11 +14,34 @@ class ProjectService:
         self._session = session
         self._projects = ProjectRepository(session)
 
-    async def list(self, page: int, page_size: int) -> tuple[list[Project], int]:
-        return await self._projects.list((page - 1) * page_size, page_size)
+    async def list(
+        self,
+        page: int,
+        page_size: int,
+        *,
+        q: str | None = None,
+        status: str | None = None,
+        customer_id: uuid.UUID | None = None,
+        sort: str = "-created_at",
+    ) -> tuple[list[Project], int]:
+        return await self._projects.list(
+            (page - 1) * page_size,
+            page_size,
+            q=q,
+            status=status,
+            customer_id=customer_id,
+            sort=sort,
+        )
 
     async def get(self, project_id: uuid.UUID) -> Project:
         project = await self._projects.get_by_id(project_id)
+        if project is None:
+            raise ResourceNotFoundError("Project was not found.")
+        return project
+
+    async def get_with_customer(self, project_id: uuid.UUID) -> Project:
+        """Same as get(), but with `customer` eager-loaded for AdminProjectRead."""
+        project = await self._projects.get_by_id_with_customer(project_id)
         if project is None:
             raise ResourceNotFoundError("Project was not found.")
         return project

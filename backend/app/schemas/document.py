@@ -1,7 +1,19 @@
 import uuid
 from datetime import datetime
+from typing import Literal
 
 from app.schemas.base import Schema
+
+# Sort keys accepted by GET /admin/documents. Every key here must have a matching
+# column in DocumentRepository.SORT_COLUMNS.
+DocumentSort = Literal[
+    "created_at",
+    "-created_at",
+    "original_filename",
+    "-original_filename",
+    "size_bytes",
+    "-size_bytes",
+]
 
 
 class DocumentRead(Schema):

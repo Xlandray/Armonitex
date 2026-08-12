@@ -15,8 +15,26 @@ class AdminUserService:
         self._session = session
         self._users = UserRepository(session)
 
-    async def list(self, page: int, page_size: int) -> tuple[list[User], int]:
-        return await self._users.list((page - 1) * page_size, page_size)
+    async def list(
+        self,
+        page: int,
+        page_size: int,
+        *,
+        q: str | None = None,
+        is_customer: bool | None = None,
+        is_superuser: bool | None = None,
+        is_active: bool | None = None,
+        sort: str = "-created_at",
+    ) -> tuple[list[User], int]:
+        return await self._users.list(
+            (page - 1) * page_size,
+            page_size,
+            q=q,
+            is_customer=is_customer,
+            is_superuser=is_superuser,
+            is_active=is_active,
+            sort=sort,
+        )
 
     async def create(self, user_in: AdminUserCreate) -> User:
         user = User(
@@ -30,9 +48,7 @@ class AdminUserService:
             await self._session.commit()
         except IntegrityError as error:
             await self._session.rollback()
-            raise EmailAlreadyRegisteredError(
-                "A user with this email already exists."
-            ) from error
+            raise EmailAlreadyRegisteredError("A user with this email already exists.") from error
         await self._session.refresh(user)
         return user
 
@@ -44,8 +60,12 @@ class AdminUserService:
 
     async def update(self, user_id: uuid.UUID, user_in: AdminUserUpdate) -> User:
         user = await self.get(user_id)
-        for field, value in user_in.model_dump(exclude_unset=True).items():
+        data = user_in.model_dump(exclude_unset=True)
+        password = data.pop("password", None)
+        for field, value in data.items():
             setattr(user, field, value)
+        if password is not None:
+            user.hashed_password = hash_password(password)
         await self._session.commit()
         await self._session.refresh(user)
         return user

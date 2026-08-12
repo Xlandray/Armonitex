@@ -17,6 +17,15 @@ dependencies = [
     "uvicorn[standard]>=0.35,<1.0",
 ]
 
+[project.optional-dependencies]
+# Bicimlendirici ve linter surumleri sabitlenmis durumda: black'in "stable
+# style"i her yil degisiyor ve pin olmadan `black --check` farkli makinelerde
+# farkli sonuc veriyordu (26.x = 2026 stili).
+dev = [
+    "black>=26.5,<27.0",
+    "ruff>=0.15,<0.16",
+]
+
 [build-system]
 requires = ["setuptools>=80"]
 build-backend = "setuptools.build_meta"

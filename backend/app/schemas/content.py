@@ -1,9 +1,14 @@
 import uuid
 from datetime import datetime
+from typing import Literal
 
 from pydantic import Field
 
 from app.schemas.base import Schema
+
+# Sort keys accepted by GET /admin/contents. Every key here must have a matching
+# column in ContentRepository.SORT_COLUMNS.
+ContentSort = Literal["created_at", "-created_at", "updated_at", "-updated_at", "title", "-title"]
 
 
 class ContentCreate(Schema):
