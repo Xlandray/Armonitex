@@ -23,7 +23,7 @@ async def save_upload(file: UploadFile) -> tuple[str, int]:
     size = 0
     with dest.open("wb") as out:
         while chunk := await file.read(_CHUNK):
-            size += len(out.write(chunk))
+            size += out.write(chunk)
     return rel_name, size
 
 
