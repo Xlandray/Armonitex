@@ -46,8 +46,12 @@ class UserService:
             raise InvalidCredentialsError("Invalid email or password.")
         return user
 
+    async def get_by_email(self, email: str) -> User | None:
+        return await self._users.get_by_email(email.casefold())
+
     async def get_active_user(self, user_id: uuid.UUID) -> User:
         user = await self._users.get_by_id(user_id)
         if user is None or not user.is_active:
             raise InvalidCredentialsError("User is not available.")
         return user
+
