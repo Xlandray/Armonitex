@@ -61,20 +61,32 @@ export default function IletisimPage() {
                 <div className="pt-4 border-t border-token">
                   <div className="form-label-token">E-posta</div>
                   <a
-                    href="mailto:info@armonitex.com.tr"
+                    href="mailto:derya@armonitex.com.tr"
                     className="text-brand-token font-semibold hover:underline block"
                   >
-                    info@armonitex.com.tr
+                    derya@armonitex.com.tr
+                  </a>
+                </div>
+
+                <div className="pt-4 border-t border-token">
+                  <div className="form-label-token">Web</div>
+                  <a
+                    href="https://ateacikhava.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-token font-semibold hover:underline block"
+                  >
+                    ateacikhava.com
                   </a>
                 </div>
 
                 <div className="pt-4 border-t border-token">
                   <div className="form-label-token">Telefon</div>
                   <a
-                    href="tel:+902160000000"
+                    href="tel:+902164207052"
                     className="text-brand-token font-semibold text-base hover:underline block"
                   >
-                    0 (216) 000 00 00
+                    0216 420 70 52
                   </a>
                 </div>
 

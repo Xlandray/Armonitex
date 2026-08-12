@@ -286,8 +286,8 @@ export default async function HomePage() {
             <Link href="/iletisim" className="btn-primary-token text-base px-7 py-3.5">
               Hızlı Teklif Formu
             </Link>
-            <a href="tel:+902160000000" className="btn-secondary-token text-base px-7 py-3.5">
-              0 (216) 000 00 00
+            <a href="tel:+902164207052" className="btn-secondary-token text-base px-7 py-3.5">
+              0216 420 70 52
             </a>
           </div>
         </div>

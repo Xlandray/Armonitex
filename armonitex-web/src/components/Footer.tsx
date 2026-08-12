@@ -58,16 +58,24 @@ export default function Footer() {
               Yukarı Dudullu, Edep Sk. No:9, 34775 Ümraniye / İstanbul
             </p>
             <a
-              href="mailto:info@armonitex.com.tr"
+              href="mailto:derya@armonitex.com.tr"
               className="block text-sm text-subtle-token hover:text-brand-token transition-colors"
             >
-              info@armonitex.com.tr
+              derya@armonitex.com.tr
             </a>
             <a
-              href="tel:+902160000000"
+              href="https://ateacikhava.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-sm text-subtle-token hover:text-brand-token transition-colors"
+            >
+              ateacikhava.com
+            </a>
+            <a
+              href="tel:+902164207052"
               className="block text-sm font-semibold text-main-token hover:text-brand-token transition-colors"
             >
-              0 (216) 000 00 00
+              0216 420 70 52
             </a>
           </div>
         </div>

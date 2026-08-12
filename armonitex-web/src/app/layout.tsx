@@ -82,8 +82,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     url: "https://armonitex.com.tr",
     logo: "https://armonitex.com.tr/logo.png",
     description: "İç mekan ve dış mekan dijital baskı, ışıklı/ışıksız tabela, araç giydirme ve fuar display sistemleri üretimi.",
-    telephone: "+90-216-000-0000",
-    email: "info@armonitex.com.tr",
+    telephone: "+90-216-420-70-52",
+    email: "derya@armonitex.com.tr",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Yukarı Dudullu, Edep Sk. No:9, 34775",

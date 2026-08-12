@@ -53,7 +53,7 @@ export default function RegisterPage() {
             type="text"
             required
             className="input-token mt-1"
-            placeholder="Mert Simge"
+            placeholder="Adınız Soyadınız"
           />
         </div>
 

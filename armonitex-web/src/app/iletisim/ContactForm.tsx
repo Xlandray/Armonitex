@@ -56,7 +56,7 @@ export default function ContactForm() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="form-label-token">Ad Soyad *</label>
-            <input name="name" type="text" required className="input-token" placeholder="Mert Simge" />
+            <input name="name" type="text" required className="input-token" placeholder="Adınız Soyadınız" />
           </div>
 
           <div>
