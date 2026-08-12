@@ -27,7 +27,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-center font-display text-2xl font-extrabold tracking-tight text-main-token">
+        <h2 className="text-center text-2xl font-semibold tracking-tight text-main-token">
           Şifre Sıfırlama
         </h2>
         <p className="mt-2 text-center text-sm text-subtle-token">

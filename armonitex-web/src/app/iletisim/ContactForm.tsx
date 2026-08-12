@@ -35,13 +35,10 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="card-token p-6 sm:p-8 bg-white-token space-y-5">
+    <div className="card-token p-8 bg-white-token space-y-5">
       <div className="space-y-1 pb-4 border-b border-token">
-        <div className="flex items-center gap-2 label-mono-token">
-          <span className="reg-cross-token" aria-hidden />
-          Teklif Formu
-        </div>
-        <h2 className="font-display text-xl font-bold text-main-token">Projenizi Anlatın</h2>
+        <p className="eyebrow-token">Teklif Formu</p>
+        <h2 className="text-xl font-semibold text-main-token">Projenizi Anlatın</h2>
       </div>
       {status && (
         <div

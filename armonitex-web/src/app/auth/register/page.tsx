@@ -40,7 +40,7 @@ export default function RegisterPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-center font-display text-2xl font-extrabold tracking-tight text-main-token">
+        <h2 className="text-center text-2xl font-semibold tracking-tight text-main-token">
           Yeni Hesap Oluştur
         </h2>
       </div>

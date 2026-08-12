@@ -97,16 +97,15 @@ export default async function ContentDetailPage({
       <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <Link
           href="/icerikler"
-          className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-wider uppercase text-muted-token hover:text-brand-token transition-colors mb-8"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-token hover:text-brand-token transition-colors mb-8"
         >
-          <span className="reg-cross-token" aria-hidden />
-          Tüm İçerikler
+          ← Tüm İçerikler
         </Link>
 
         <article className="space-y-8">
           <header className="space-y-4 pb-8 border-b border-token">
-            <span className="badge-cyan-token">SEKTÖREL DUYURU</span>
-            <h1 className="font-display text-3xl md:text-5xl font-extrabold text-main-token leading-[1.08] tracking-tight">
+            <span className="badge-cyan-token">Sektörel Duyuru</span>
+            <h1 className="text-3xl md:text-5xl font-semibold text-main-token leading-[1.08] tracking-tight">
               {content.title}
             </h1>
           </header>

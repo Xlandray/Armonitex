@@ -39,7 +39,7 @@ export default function Breadcrumbs({ items, onDark = false }: BreadcrumbsProps)
       />
       <nav
         aria-label="Breadcrumb"
-        className={`flex items-center gap-2 font-mono text-[11px] tracking-wider uppercase ${
+        className={`flex items-center gap-2 text-sm ${
           onDark ? "text-on-navy-muted" : "text-muted-token"
         }`}
       >
@@ -51,7 +51,7 @@ export default function Breadcrumbs({ items, onDark = false }: BreadcrumbsProps)
         </Link>
         {items.map((item, idx) => (
           <div key={idx} className="flex items-center gap-2">
-            <span className="text-brand-token">/</span>
+            <span className="text-muted-token" aria-hidden>/</span>
             {item.href ? (
               <Link
                 href={item.href}
@@ -60,7 +60,7 @@ export default function Breadcrumbs({ items, onDark = false }: BreadcrumbsProps)
                 {item.label}
               </Link>
             ) : (
-              <span className={onDark ? "text-white-token" : "text-main-token"}>{item.label}</span>
+              <span className={onDark ? "text-white-token" : "text-main-token font-medium"}>{item.label}</span>
             )}
           </div>
         ))}

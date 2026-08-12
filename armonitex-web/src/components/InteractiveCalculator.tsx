@@ -29,20 +29,17 @@ export default function InteractiveCalculator({ initialSlug }: InteractiveCalcul
     <div className="card-token p-6 sm:p-8 bg-white-token space-y-6">
       <div className="flex items-center justify-between border-b border-token pb-4 flex-wrap gap-3">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 label-mono-token">
-            <span className="reg-cross-token" aria-hidden />
-            Otomatik Hesaplama Matriksi
-          </div>
-          <h3 className="font-display text-xl font-extrabold text-main-token">Canlı Baskı Fiyat Hesaplayıcı</h3>
+          <p className="eyebrow-token">Otomatik Hesaplama</p>
+          <h3 className="text-xl font-semibold text-main-token">Canlı Baskı Fiyat Hesaplayıcı</h3>
         </div>
-        <span className="badge-cyan-token">ANINDA TAHMİN</span>
+        <span className="badge-cyan-token">Anında Tahmin</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Input Controls */}
         <div className="space-y-4">
           <div>
-            <label className="form-label-token">01 · Baskı / Reklam Hizmet Türü</label>
+            <label className="form-label-token">Baskı / Reklam Hizmet Türü</label>
             <select
               value={selectedSlug}
               onChange={(e) => setSelectedSlug(e.target.value)}
@@ -66,7 +63,7 @@ export default function InteractiveCalculator({ initialSlug }: InteractiveCalcul
                 step="0.1"
                 value={widthMeters}
                 onChange={(e) => setWidthMeters(Math.max(0.1, parseFloat(e.target.value) || 0))}
-                className="input-token font-mono"
+                className="input-token tabular-nums"
               />
             </div>
 
@@ -79,7 +76,7 @@ export default function InteractiveCalculator({ initialSlug }: InteractiveCalcul
                 step="0.1"
                 value={heightMeters}
                 onChange={(e) => setHeightMeters(Math.max(0.1, parseFloat(e.target.value) || 0))}
-                className="input-token font-mono"
+                className="input-token tabular-nums"
               />
             </div>
           </div>
@@ -93,7 +90,7 @@ export default function InteractiveCalculator({ initialSlug }: InteractiveCalcul
                 max="1000"
                 value={quantity}
                 onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                className="input-token font-mono"
+                className="input-token tabular-nums"
               />
             </div>
 
@@ -112,29 +109,28 @@ export default function InteractiveCalculator({ initialSlug }: InteractiveCalcul
         </div>
 
         {/* Real-time Calculation Result Box */}
-        <div className="bg-navy-gradient-token p-6 rounded-xl flex flex-col justify-between space-y-5 relative overflow-hidden">
-          <span className="reg-cross-navy-token absolute top-4 right-4" aria-hidden />
+        <div className="bg-cyan-soft-token border border-cyan-token p-6 rounded-xl flex flex-col justify-between space-y-5">
           <div className="space-y-3">
-            <div className="label-mono-navy-token">Hesaplama Özeti</div>
-            <div className="flex justify-between text-sm text-on-navy-muted border-b border-on-navy-token pb-2">
+            <p className="eyebrow-token">Hesaplama Özeti</p>
+            <div className="flex justify-between text-sm text-subtle-token border-b border-cyan-token pb-2">
               <span>Seçilen Hizmet</span>
-              <span className="font-semibold text-on-navy-token text-right">{currentService.title}</span>
+              <span className="font-semibold text-main-token text-right">{currentService.title}</span>
             </div>
-            <div className="flex justify-between text-sm text-on-navy-muted border-b border-on-navy-token pb-2">
+            <div className="flex justify-between text-sm text-subtle-token border-b border-cyan-token pb-2">
               <span>Toplam Alan</span>
-              <span className="font-mono text-on-navy-token">{totalSquareMeters} m²</span>
+              <span className="font-semibold text-main-token">{totalSquareMeters} m²</span>
             </div>
-            <div className="flex justify-between text-sm text-on-navy-muted border-b border-on-navy-token pb-2">
+            <div className="flex justify-between text-sm text-subtle-token border-b border-cyan-token pb-2">
               <span>Birim Fiyat</span>
-              <span className="font-mono text-on-navy-token">{basePricePerM2} TL / m²</span>
+              <span className="font-semibold text-main-token">{basePricePerM2} TL / m²</span>
             </div>
           </div>
 
           <div>
-            <div className="label-mono-navy-token">Tahmini Toplam (KDV Hariç)</div>
-            <div className="font-mono text-4xl font-semibold text-brand-token tracking-tight mt-1">
+            <p className="text-sm text-subtle-token">Tahmini Toplam (KDV Hariç)</p>
+            <div className="text-4xl font-semibold text-brand-token tracking-tight mt-1 tabular-nums">
               ₺{estimatedTotalPrice.toLocaleString("tr-TR")}
-              <span className="text-xs text-on-navy-muted font-normal ml-1">TL</span>
+              <span className="text-xs text-muted-token font-normal ml-1">TL</span>
             </div>
           </div>
 

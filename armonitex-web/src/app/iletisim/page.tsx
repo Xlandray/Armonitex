@@ -27,14 +27,11 @@ export default function IletisimPage() {
 
         {/* Page Title Header */}
         <div className="max-w-3xl space-y-4">
-          <div className="flex items-center gap-2 label-mono-token">
-            <span className="reg-cross-token" aria-hidden />
-            Ümraniye Üretim Tesisi
-          </div>
-          <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-main-token tracking-tight">
-            Bizimle <span className="accent-underline-token text-brand-token">İletişime</span> Geçin
+          <p className="eyebrow-token">Ümraniye Üretim Tesisi</p>
+          <h1 className="text-4xl sm:text-5xl font-semibold text-main-token tracking-tight">
+            Bizimle <span className="text-brand-token">iletişime</span> geçin
           </h1>
-          <p className="text-subtle-token text-base leading-relaxed">
+          <p className="text-lg text-subtle-token leading-relaxed">
             Projenizin detaylarını iletin veya Ümraniye tesisimizi ziyaret ederek baskı numunelerimizi
             yerinde inceleyin.
           </p>
@@ -44,16 +41,15 @@ export default function IletisimPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Contact Cards */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="card-token p-6 sm:p-8 bg-white-token space-y-6">
-              <div className="flex items-center gap-2 label-mono-token pb-4 border-b border-token">
-                <span className="reg-cross-token" aria-hidden />
+            <div className="card-token p-8 bg-white-token space-y-6">
+              <h2 className="text-lg font-semibold text-main-token pb-4 border-b border-token">
                 İletişim Bilgileri
-              </div>
+              </h2>
 
               <div className="space-y-5 text-sm">
                 <div>
                   <div className="form-label-token">Fabrika &amp; Üretim Adresi</div>
-                  <div className="font-display font-bold text-main-token">
+                  <div className="font-semibold text-main-token">
                     Armoni Reklam &amp; UPD Açıkhava Çözümleri
                   </div>
                   <div className="text-subtle-token mt-0.5 leading-relaxed">
@@ -76,7 +72,7 @@ export default function IletisimPage() {
                   <div className="form-label-token">Telefon</div>
                   <a
                     href="tel:+902160000000"
-                    className="font-mono text-brand-token font-semibold text-base hover:underline block"
+                    className="text-brand-token font-semibold text-base hover:underline block"
                   >
                     0 (216) 000 00 00
                   </a>
@@ -111,10 +107,10 @@ export default function IletisimPage() {
         {/* Dynamic Interactive Google Map Location */}
         <section className="space-y-4 pt-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-main-token tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-main-token tracking-tight">
               Üretim Tesisimiz Konumu
             </h2>
-            <span className="font-mono text-[11px] tracking-wide text-subtle-token bg-cyan-soft-token px-3 py-1.5 rounded-md border border-cyan-token">
+            <span className="text-xs text-subtle-token bg-cyan-soft-token px-3 py-1.5 rounded-md border border-cyan-token">
               Yukarı Dudullu, Edep Sk. No:9, 34775 Ümraniye/İstanbul
             </span>
           </div>
