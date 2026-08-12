@@ -10,23 +10,30 @@ from app.domain.exceptions import (
     ResourceNotFoundError,
 )
 from app.schemas import (
+    AdminFinancialRecordRead,
+    AdminProjectRead,
     AdminUserCreate,
     AdminUserUpdate,
     ContentCreate,
     ContentRead,
+    ContentSort,
     ContentUpdate,
     DocumentRead,
     FinancialRecordCreate,
     FinancialRecordRead,
+    FinancialRecordSort,
     FinancialRecordUpdate,
     Page,
     ProjectCreate,
     ProjectRead,
+    ProjectSort,
     ProjectUpdate,
     SettingCreate,
     SettingRead,
+    SettingSort,
     SettingUpdate,
     UserRead,
+    UserSort,
 )
 from app.services.admin_user_service import AdminUserService
 from app.services.content_service import ContentService
@@ -38,6 +45,9 @@ from app.services.setting_service import SettingService
 router = APIRouter(dependencies=[Depends(get_current_superuser)])
 PageNumber = Annotated[int, Query(ge=1)]
 PageSize = Annotated[int, Query(ge=1, le=100)]
+# Free-text search. Each resource decides which columns it matches against;
+# the allowed sort keys are the Literal aliases declared next to each schema.
+SearchQuery = Annotated[str | None, Query(max_length=100)]
 
 
 def not_found(error: ResourceNotFoundError) -> HTTPException:
@@ -50,9 +60,24 @@ def conflict(error: ResourceConflictError) -> HTTPException:
 
 @router.get("/users", response_model=Page[UserRead])
 async def list_users(
-    session: SessionDep, page: PageNumber = 1, page_size: PageSize = 25
+    session: SessionDep,
+    page: PageNumber = 1,
+    page_size: PageSize = 25,
+    q: SearchQuery = None,
+    is_customer: bool | None = None,
+    is_superuser: bool | None = None,
+    is_active: bool | None = None,
+    sort: UserSort = "-created_at",
 ) -> Page[UserRead]:
-    data, total = await AdminUserService(session).list(page, page_size)
+    data, total = await AdminUserService(session).list(
+        page,
+        page_size,
+        q=q,
+        is_customer=is_customer,
+        is_superuser=is_superuser,
+        is_active=is_active,
+        sort=sort,
+    )
     return Page(data=[UserRead.model_validate(u) for u in data], total=total)
 
 
@@ -87,9 +112,16 @@ async def get_user(user_id: uuid.UUID, session: SessionDep) -> UserRead:
 
 @router.get("/contents", response_model=Page[ContentRead])
 async def list_contents(
-    session: SessionDep, page: PageNumber = 1, page_size: PageSize = 25
+    session: SessionDep,
+    page: PageNumber = 1,
+    page_size: PageSize = 25,
+    q: SearchQuery = None,
+    is_published: bool | None = None,
+    sort: ContentSort = "-created_at",
 ) -> Page[ContentRead]:
-    data, total = await ContentService(session).list(page, page_size)
+    data, total = await ContentService(session).list(
+        page, page_size, q=q, is_published=is_published, sort=sort
+    )
     return Page(data=[ContentRead.model_validate(c) for c in data], total=total)
 
 
@@ -136,9 +168,13 @@ async def delete_content(content_id: uuid.UUID, session: SessionDep) -> None:
 
 @router.get("/settings", response_model=Page[SettingRead])
 async def list_settings(
-    session: SessionDep, page: PageNumber = 1, page_size: PageSize = 25
+    session: SessionDep,
+    page: PageNumber = 1,
+    page_size: PageSize = 25,
+    q: SearchQuery = None,
+    sort: SettingSort = "key",
 ) -> Page[SettingRead]:
-    data, total = await SettingService(session).list(page, page_size)
+    data, total = await SettingService(session).list(page, page_size, q=q, sort=sort)
     return Page(data=[SettingRead.model_validate(s) for s in data], total=total)
 
 
@@ -181,12 +217,20 @@ async def delete_setting(setting_id: uuid.UUID, session: SessionDep) -> None:
         raise not_found(error) from error
 
 
-@router.get("/projects", response_model=Page[ProjectRead])
+@router.get("/projects", response_model=Page[AdminProjectRead])
 async def list_projects(
-    session: SessionDep, page: PageNumber = 1, page_size: PageSize = 25
-) -> Page[ProjectRead]:
-    data, total = await ProjectService(session).list(page, page_size)
-    return Page(data=[ProjectRead.model_validate(p) for p in data], total=total)
+    session: SessionDep,
+    page: PageNumber = 1,
+    page_size: PageSize = 25,
+    q: SearchQuery = None,
+    status: str | None = None,
+    customer_id: uuid.UUID | None = None,
+    sort: ProjectSort = "-created_at",
+) -> Page[AdminProjectRead]:
+    data, total = await ProjectService(session).list(
+        page, page_size, q=q, status=status, customer_id=customer_id, sort=sort
+    )
+    return Page(data=[AdminProjectRead.model_validate(p) for p in data], total=total)
 
 
 @router.post("/projects", response_model=ProjectRead, status_code=status.HTTP_201_CREATED)
@@ -198,11 +242,11 @@ async def create_project(project_in: ProjectCreate, session: SessionDep) -> Proj
         raise conflict(error) from error
 
 
-@router.get("/projects/{project_id}", response_model=ProjectRead)
-async def get_project(project_id: uuid.UUID, session: SessionDep) -> ProjectRead:
+@router.get("/projects/{project_id}", response_model=AdminProjectRead)
+async def get_project(project_id: uuid.UUID, session: SessionDep) -> AdminProjectRead:
     try:
-        project = await ProjectService(session).get(project_id)
-        return ProjectRead.model_validate(project)
+        project = await ProjectService(session).get_with_customer(project_id)
+        return AdminProjectRead.model_validate(project)
     except ResourceNotFoundError as error:
         raise not_found(error) from error
 
@@ -228,12 +272,21 @@ async def delete_project(project_id: uuid.UUID, session: SessionDep) -> None:
         raise not_found(error) from error
 
 
-@router.get("/financial-records", response_model=Page[FinancialRecordRead])
+@router.get("/financial-records", response_model=Page[AdminFinancialRecordRead])
 async def list_financial_records(
-    session: SessionDep, page: PageNumber = 1, page_size: PageSize = 25
-) -> Page[FinancialRecordRead]:
-    data, total = await FinancialRecordService(session).list(page, page_size)
-    return Page(data=[FinancialRecordRead.model_validate(r) for r in data], total=total)
+    session: SessionDep,
+    page: PageNumber = 1,
+    page_size: PageSize = 25,
+    q: SearchQuery = None,
+    type: str | None = None,
+    status: str | None = None,
+    project_id: uuid.UUID | None = None,
+    sort: FinancialRecordSort = "-created_at",
+) -> Page[AdminFinancialRecordRead]:
+    data, total = await FinancialRecordService(session).list(
+        page, page_size, q=q, type=type, status=status, project_id=project_id, sort=sort
+    )
+    return Page(data=[AdminFinancialRecordRead.model_validate(r) for r in data], total=total)
 
 
 @router.post(

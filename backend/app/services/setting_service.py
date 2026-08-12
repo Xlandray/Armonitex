@@ -14,8 +14,15 @@ class SettingService:
         self._session = session
         self._settings = SettingRepository(session)
 
-    async def list(self, page: int, page_size: int) -> tuple[list[Setting], int]:
-        return await self._settings.list((page - 1) * page_size, page_size)
+    async def list(
+        self,
+        page: int,
+        page_size: int,
+        *,
+        q: str | None = None,
+        sort: str = "key",
+    ) -> tuple[list[Setting], int]:
+        return await self._settings.list((page - 1) * page_size, page_size, q=q, sort=sort)
 
     async def get(self, setting_id: uuid.UUID) -> Setting:
         setting = await self._settings.get_by_id(setting_id)

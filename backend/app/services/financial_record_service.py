@@ -20,8 +20,26 @@ class FinancialRecordService:
         self._session = session
         self._records = FinancialRecordRepository(session)
 
-    async def list(self, page: int, page_size: int) -> tuple[list[FinancialRecord], int]:
-        return await self._records.list((page - 1) * page_size, page_size)
+    async def list(
+        self,
+        page: int,
+        page_size: int,
+        *,
+        q: str | None = None,
+        type: str | None = None,
+        status: str | None = None,
+        project_id: uuid.UUID | None = None,
+        sort: str = "-created_at",
+    ) -> tuple[list[FinancialRecord], int]:
+        return await self._records.list(
+            (page - 1) * page_size,
+            page_size,
+            q=q,
+            type=type,
+            status=status,
+            project_id=project_id,
+            sort=sort,
+        )
 
     async def get(self, record_id: uuid.UUID) -> FinancialRecord:
         record = await self._records.get_by_id(record_id)

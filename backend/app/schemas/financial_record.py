@@ -1,12 +1,27 @@
 import uuid
 from datetime import date, datetime
 from decimal import Decimal
+from typing import Literal
 
 from pydantic import Field
 
 from app.schemas.base import Schema
+from app.schemas.project import ProjectBrief
 
 FINANCIAL_TYPES = ("quote", "invoice")
+
+# Sort keys accepted by GET /admin/financial-records. Every key here must have a
+# matching column in FinancialRecordRepository.SORT_COLUMNS.
+FinancialRecordSort = Literal[
+    "created_at",
+    "-created_at",
+    "issue_date",
+    "-issue_date",
+    "due_date",
+    "-due_date",
+    "amount",
+    "-amount",
+]
 QUOTE_STATUSES = ("bekliyor", "onaylandi", "reddedildi")
 INVOICE_STATUSES = ("bekliyor", "odendi", "gecikti")
 
@@ -46,3 +61,13 @@ class FinancialRecordRead(Schema):
     document_id: uuid.UUID | None
     created_at: datetime
     updated_at: datetime
+
+
+class AdminFinancialRecordRead(FinancialRecordRead):
+    """Admin-only view; the project relationship must be eager-loaded.
+
+    Kept separate from FinancialRecordRead so the customer portal, which shares
+    that schema, keeps returning exactly what it returned before.
+    """
+
+    project: ProjectBrief
